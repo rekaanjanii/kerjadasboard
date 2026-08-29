@@ -6,41 +6,46 @@
   <title>DASHBOARD KERJA INTERAKTIF</title>
   <style>
     :root {
-      --bg-color: #eef2f5;
-      --card-bg: #ffffff;
-      --text-color: #333333;
-      --primary-color: #1d61e7;
-      --header-card-bg: #00e5ff;
-      --header-card-text: #000000;
-      --border-color: #111111;
+      --bg-color: #0d1b2a;
+      --card-bg: #1b263b;
+      --text-color: #ffffff;
+      --primary-color: #e63946;
+      --header-card-bg: #a50044;
+      --header-card-text: #ffed00;
+      --border-color: #ffed00;
       --grid-cols: repeat(3, 1fr);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
     body { background-color: var(--bg-color); padding: 20px; color: var(--text-color); transition: background-color 0.3s; }
-    .container { max-width: 1400px; margin: 0 auto; background-color: var(--card-bg); border-radius: 12px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+    .container { max-width: 1400px; margin: 0 auto; background-color: var(--card-bg); border-radius: 12px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
 
     /* HEADER */
-    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 15px; }
+    .header-left { display: flex; align-items: center; gap: 15px; }
+    
+    /* FOTO PROFIL HEADER */
+    .profile-avatar { width: 55px; height: 55px; border-radius: 50%; border: 2.5px solid var(--border-color); object-fit: cover; background-color: rgba(255,255,255,0.1); box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+
     .header-title h1 { font-size: 22px; color: var(--primary-color); font-weight: 800; letter-spacing: 0.5px; }
-    .header-title p { font-size: 13px; color: #777; margin-top: 2px; }
+    .header-title p { font-size: 13px; color: #a0aec0; margin-top: 2px; }
     .header-actions { display: flex; gap: 10px; align-items: center; }
     .badge-status { background-color: #d1e7dd; color: #0f5132; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
     .badge-status.offline { background-color: #f8d7da; color: #842029; }
-    .btn-header { border: none; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; }
-    .btn-admin { background-color: #d0e1fd; color: #0d47a1; }
+    .btn-header { border: none; padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; transition: 0.2s; }
+    .btn-admin { background-color: #3b82f6; color: #fff; }
     .btn-logout { background-color: #e53935; color: #fff; display: none; }
 
     /* SEARCH BAR */
     .search-box { margin-bottom: 20px; }
-    .search-label { font-size: 12px; font-weight: 700; margin-bottom: 6px; }
+    .search-label { font-size: 12px; font-weight: 700; margin-bottom: 6px; letter-spacing: 0.5px; }
     .search-input-wrapper { position: relative; }
     .search-input-wrapper input { width: 100%; padding: 10px 15px 10px 38px; border: 1.5px solid #f6e05e; background-color: #fefcbf; border-radius: 8px; font-size: 13px; outline: none; color: #333; }
     .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #d69e2e; font-size: 14px; }
 
     /* ADMIN PANEL */
-    .admin-panel { border: 1.5px dashed #63b3ed; border-radius: 8px; padding: 12px 16px; display: none; justify-content: space-between; align-items: center; margin-bottom: 20px; background-color: rgba(226, 232, 240, 0.2); }
-    .admin-panel-title { font-size: 13px; font-weight: 700; color: var(--primary-color); }
+    .admin-panel { border: 1.5px dashed var(--primary-color); border-radius: 8px; padding: 12px 16px; display: none; justify-content: space-between; align-items: center; margin-bottom: 20px; background-color: rgba(255, 255, 255, 0.05); }
+    .admin-panel-title { font-size: 13px; font-weight: 700; color: var(--border-color); }
     .admin-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
     .btn-panel { border: none; padding: 8px 14px; border-radius: 6px; color: #fff; font-size: 12px; font-weight: 700; cursor: pointer; }
     .btn-tambah { background-color: #00a86b; }
@@ -64,7 +69,7 @@
     .table-content td:last-child { border-right: none; }
     .table-content tr:last-child td { border-bottom: none; }
 
-    .col-num { width: 45px; text-align: center; background-color: rgba(0,0,0,0.03); }
+    .col-num { width: 45px; text-align: center; background-color: rgba(0,0,0,0.15); }
     .num-box { display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: 8px; }
     .num-box span { font-weight: 700; }
 
@@ -86,27 +91,27 @@
     .admin-mode .btn-tambah-kolom { display: inline; }
 
     /* FOOTER TABS */
-    .footer-tabs { display: flex; gap: 10px; border-top: 1px solid #e2e8f0; padding-top: 15px; overflow-x: auto; }
-    .tab-btn { padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 700; border: 1px solid #e2e8f0; background-color: #f8fafc; color: #475569; cursor: pointer; white-space: nowrap; }
+    .footer-tabs { display: flex; gap: 10px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; overflow-x: auto; }
+    .tab-btn { padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 700; border: 1px solid rgba(255,255,255,0.2); background-color: rgba(255,255,255,0.05); color: #ccc; cursor: pointer; white-space: nowrap; }
     .tab-btn.active { background-color: var(--primary-color); color: #fff; border-color: var(--primary-color); }
     .tab-btn.dashed { border: 1px dashed #94a3b8; background-color: transparent; display: none; }
 
     /* POPUP MODAL UNIFIED SETTINGS */
-    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 1000; }
-    .modal-card { background: #fff; border-radius: 12px; width: 100%; max-width: 520px; padding: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: left; color: #333; max-height: 90vh; overflow-y: auto; }
-    .modal-card h2 { font-size: 18px; margin-bottom: 6px; color: var(--primary-color); text-align: center; }
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 1000; }
+    .modal-card { background: #fff; border-radius: 12px; width: 100%; max-width: 520px; padding: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); text-align: left; color: #333; max-height: 90vh; overflow-y: auto; }
+    .modal-card h2 { font-size: 18px; margin-bottom: 6px; color: #1d61e7; text-align: center; }
     .modal-card p { font-size: 12px; color: #666; margin-bottom: 20px; text-align: center; }
     .form-group { margin-bottom: 16px; }
     .form-group label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 6px; color: #444; }
     .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; outline: none; }
     .modal-btns { display: flex; gap: 10px; margin-top: 20px; }
     .btn-modal { flex: 1; padding: 10px; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 13px; text-align: center; }
-    .btn-modal-submit { background: var(--primary-color); color: white; }
+    .btn-modal-submit { background: #1d61e7; color: white; }
     .btn-modal-cancel { background: #e2e8f0; color: #475569; }
     .login-error { color: #e74c3c; font-size: 11px; margin-top: 8px; display: none; text-align: center; }
 
     /* TAB MANAGER LIST */
-    .tab-manager-list { display: flex; flex-direction: column; gap: 8px; max-height: 200px; overflow-y: auto; padding-right: 4px; border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px; background: #fafafa; }
+    .tab-manager-list { display: flex; flex-direction: column; gap: 8px; max-height: 180px; overflow-y: auto; padding-right: 4px; border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px; background: #fafafa; }
     .tab-manager-item { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 8px 10px; border-radius: 6px; border: 1px solid #e2e8f0; }
     .tab-manager-item span { font-size: 12px; font-weight: 700; flex-grow: 1; }
     .tab-item-actions { display: flex; gap: 4px; }
@@ -119,14 +124,18 @@
   <div class="container" id="appContainer">
     <!-- HEADER -->
     <div class="header">
-      <div class="header-title">
-        <h1>DASHBOARD KERJA</h1>
-        <p>Sistem Manajemen Tabel & Informasi Real-time</p>
+      <div class="header-left">
+        <!-- FOTO PROFIL (Bisa Diatur via Link Gambar) -->
+        <img id="profileImage" class="profile-avatar" src="https://via.placeholder.com/150" alt="Foto Profil" onerror="this.src='https://via.placeholder.com/150'">
+        <div class="header-title">
+          <h1>DASHBOARD KERJA</h1>
+          <p>Sistem Manajemen Tabel & Informasi Real-time</p>
+        </div>
       </div>
       <div class="header-actions">
         <div class="badge-status" id="dbStatus">☁ Menghubungkan...</div>
         <button class="btn-header btn-admin" id="btnAdminLogin" onclick="openLoginModal()">👤 Admin Mode</button>
-        <button class="btn-header btn-logout" id="btnLogout" onclick="logoutAdmin()">Logout</button>
+        <button class="btn-header btn-logout" id="btnLogout" onclick="logoutAdmin()">🚪 Logout</button>
       </div>
     </div>
 
@@ -144,7 +153,7 @@
       <div class="admin-panel-title">⚙️ PANEL ADMIN DASHBOARD</div>
       <div class="admin-buttons">
         <button class="btn-panel btn-tambah" onclick="addTable()">+ Tambah Tabel</button>
-        <button class="btn-panel btn-setting" onclick="openUnifiedSettingsModal()">⚙️ Pusat Pengaturan (Tema & Halaman)</button>
+        <button class="btn-panel btn-setting" onclick="openUnifiedSettingsModal()">⚙️ Pusat Pengaturan (Profil, Tema & Halaman)</button>
         <button class="btn-panel btn-setup" onclick="resetData()">🔄 Reset Data</button>
       </div>
     </div>
@@ -183,7 +192,15 @@
   <div class="modal-overlay" id="unifiedSettingsModal">
     <div class="modal-card">
       <h2>⚙️ Pusat Pengaturan Dashboard</h2>
-      <p>Atur judul halaman, susunan tab, tata letak grid, dan 30 pilihan tema warna.</p>
+      <p>Atur Foto Profil, Judul Halaman, Susunan Tab, Tata Letak, & Tema Warna.</p>
+
+      <!-- BAGIAN 0: SETTING FOTO PROFIL VIA LINK -->
+      <div class="form-group">
+        <label>🖼️ Link URL Foto Profil (Atas Header)</label>
+        <input type="text" id="profileUrlInput" placeholder="https://domain.com/foto-anda.jpg" onchange="updateProfilePicture(this.value)">
+      </div>
+
+      <div class="section-divider"></div>
 
       <!-- BAGIAN 1: KELOLA NAMA & HALAMAN TAB -->
       <div class="form-group">
@@ -198,7 +215,6 @@
       <div class="form-group">
         <label>🎨 Pilihan Tema Warna (30 Jenis)</label>
         <select id="themeSelect" onchange="applyThemeSetting(this.value)">
-          <!-- 30 Tema Lengkap Variatif -->
           <option value="default">1. Default Blue (Biru Standard)</option>
           <option value="barcelona">2. FC Barcelona (Crimson & Navy)</option>
           <option value="dark">3. Dark Modern (Hitam Elegan)</option>
@@ -259,14 +275,16 @@
       password: "admin123"
     };
 
-    let isAdminLoggedIn = false;
+    // CEK STATUS LOGIN PERMANEN DI LOCALSTORAGE (SISTEM ANTI AUTO LOGOUT)
+    let isAdminLoggedIn = localStorage.getItem('isAdminLoggedIn') === 'true';
 
     // DATA DEFAULT DASHBOARD
     const defaultData = {
       activeTab: 0,
       settings: {
         theme: 'barcelona',
-        gridCols: 'repeat(3, 1fr)'
+        gridCols: 'repeat(3, 1fr)',
+        profileUrl: 'https://via.placeholder.com/150'
       },
       tabs: [
         {
@@ -362,8 +380,11 @@
         statusEl.innerText = "⚠ Mode Lokal / Offline";
         statusEl.classList.add('offline');
       }
+      
+      // Terapkan Pengaturan Terimpan
       applyThemeSetting(appData.settings.theme || 'barcelona');
       applyGridSetting(appData.settings.gridCols || 'repeat(3, 1fr)');
+      loadProfilePicture(appData.settings.profileUrl);
       render();
     }
 
@@ -390,7 +411,7 @@
       pushCloudData(appData);
     }
 
-    /* LOGIN ADMIN */
+    /* SISTEM LOGIN & LOGOUT PERMANEN (PERSISTENT) */
     function openLoginModal() {
       document.getElementById('loginModal').style.display = 'flex';
       document.getElementById('loginUser').focus();
@@ -412,6 +433,7 @@
 
       if (user === ADMIN_CREDENTIALS.username && pass === ADMIN_CREDENTIALS.password) {
         isAdminLoggedIn = true;
+        localStorage.setItem('isAdminLoggedIn', 'true'); // SIMPAN STATUS LOGIN PADA BROWSER
         closeModal('loginModal');
         updateAdminView();
       } else {
@@ -420,8 +442,11 @@
     }
 
     function logoutAdmin() {
-      isAdminLoggedIn = false;
-      updateAdminView();
+      if (confirm("Apakah Anda yakin ingin Logout dari Mode Admin?")) {
+        isAdminLoggedIn = false;
+        localStorage.removeItem('isAdminLoggedIn'); // HAPUS STATUS LOGIN DARI BROWSER
+        updateAdminView();
+      }
     }
 
     function updateAdminView() {
@@ -445,12 +470,29 @@
       render();
     }
 
-    /* PUSAT PENGATURAN TERPADU (UNIFIED SETTINGS) */
+    /* PUSAT PENGATURAN TERPADU */
     function openUnifiedSettingsModal() {
+      document.getElementById('profileUrlInput').value = appData.settings.profileUrl || '';
       document.getElementById('themeSelect').value = appData.settings.theme || 'barcelona';
       document.getElementById('gridSelect').value = appData.settings.gridCols || 'repeat(3, 1fr)';
       renderTabManagerList();
       document.getElementById('unifiedSettingsModal').style.display = 'flex';
+    }
+
+    /* UPDATE FOTO PROFIL */
+    function updateProfilePicture(url) {
+      appData.settings.profileUrl = url;
+      loadProfilePicture(url);
+      saveData();
+    }
+
+    function loadProfilePicture(url) {
+      const img = document.getElementById('profileImage');
+      if (url && url.trim() !== '') {
+        img.src = url;
+      } else {
+        img.src = 'https://via.placeholder.com/150';
+      }
     }
 
     function applyThemeSetting(themeKey) {
@@ -474,7 +516,7 @@
       saveData();
     }
 
-    /* EDIT & KELOLA NAMA TAB/HALAMAN */
+    /* EDIT & KELOLA HALAMAN TAB */
     function renderTabManagerList() {
       const container = document.getElementById('tabManagerList');
       container.innerHTML = '';
@@ -485,10 +527,10 @@
         item.innerHTML = `
           <span>${idx + 1}. ${escapeHtml(tab.name)}</span>
           <div class="tab-item-actions">
-            <button class="btn-sm btn-edit-title" onclick="renamePage(${idx})" title="Edit Judul Halaman">✏️ Edit</button>
+            <button class="btn-sm btn-edit-title" onclick="renamePage(${idx})" title="Edit Judul">✏️ Edit</button>
             <button class="btn-sm btn-tambah" onclick="movePage(${idx}, -1)" ${idx === 0 ? 'disabled' : ''} title="Naik">⬆️</button>
             <button class="btn-sm btn-tambah" onclick="movePage(${idx}, 1)" ${idx === appData.tabs.length - 1 ? 'disabled' : ''} title="Turun">⬇️</button>
-            <button class="btn-sm btn-delete-card" onclick="deletePage(${idx})" ${appData.tabs.length <= 1 ? 'disabled' : ''} title="Hapus Halaman">🗑️</button>
+            <button class="btn-sm btn-delete-card" onclick="deletePage(${idx})" ${appData.tabs.length <= 1 ? 'disabled' : ''} title="Hapus">🗑️</button>
           </div>
         `;
         container.appendChild(item);
@@ -650,7 +692,7 @@
       });
     }
 
-    /* AKSI MANAGEMENT TABEL & BARIS */
+    /* MANAGEMENT TABEL & BARIS */
     function addTable() {
       if (!isAdminLoggedIn) return;
       const title = prompt("Masukkan Judul Tabel Baru:");
@@ -732,6 +774,7 @@
         saveData();
         applyThemeSetting('barcelona');
         applyGridSetting('repeat(3, 1fr)');
+        loadProfilePicture(appData.settings.profileUrl);
         render();
       }
     }
@@ -740,7 +783,7 @@
       return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
     }
 
-    // Inisialisasi Aplikasi
+    // Inisialisasi Aplikasi saat Load Halaman
     updateAdminView();
     fetchCloudData();
   </script>
