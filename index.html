@@ -15,6 +15,7 @@
     .header-title p { font-size: 13px; color: #777; margin-top: 2px; }
     .header-actions { display: flex; gap: 10px; align-items: center; }
     .badge-status { background-color: #d1e7dd; color: #0f5132; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+    .badge-status.offline { background-color: #f8d7da; color: #842029; }
     .btn-header { border: none; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; }
     .btn-admin { background-color: #d0e1fd; color: #0d47a1; }
     .btn-logout { background-color: #e53935; color: #fff; display: none; }
@@ -104,7 +105,7 @@
         <p>Sistem Manajemen Tabel & Informasi Real-time</p>
       </div>
       <div class="header-actions">
-        <div class="badge-status">☁ Tersimpan (Online/Local)</div>
+        <div class="badge-status" id="dbStatus">☁ Menghubungkan...</div>
         <button class="btn-header btn-admin" id="btnAdminLogin" onclick="openLoginModal()">👤 Admin Mode</button>
         <button class="btn-header btn-logout" id="btnLogout" onclick="logoutAdmin()">Logout</button>
       </div>
@@ -161,6 +162,10 @@
   </div>
 
   <script>
+    // KONFIGURASI SUPABASE (ISIKAN DENGAN DATA DARI SUPABASE DASHBOARD)
+    const SUPABASE_URL = "https://pmgpilaxrhdurvdolmoj.supabase.co"; 
+    const SUPABASE_ANON_KEY = "sb_publishable_ibfjVja1d0jYvPqDGBb6Yg_XQXFDw7H";
+
     // DATA LOGIN ADMIN DEFAULT
     const ADMIN_CREDENTIALS = {
       username: "admin",
@@ -169,7 +174,7 @@
 
     let isAdminLoggedIn = false;
 
-    // DATA DASHBOARD
+    // DATA DEFAULT
     const defaultData = {
       activeTab: 0,
       tabs: [
@@ -199,10 +204,60 @@
       ]
     };
 
-    let appData = JSON.parse(localStorage.getItem('dashboardData')) || defaultData;
+    let appData = defaultData;
+
+    // SINKRONISASI DENGAN SUPABASE CLOUD
+    async function fetchCloudData() {
+      const statusEl = document.getElementById('dbStatus');
+      try {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/dashboard?id=eq.1&select=*`, {
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+          }
+        });
+
+        if (!response.ok) throw new Error('Gagal mengambil data');
+
+        const result = await response.json();
+        if (result && result.length > 0) {
+          appData = result[0].data;
+        } else {
+          await pushCloudData(defaultData);
+        }
+
+        statusEl.innerText = "☁ Terhubung (Supabase Cloud)";
+        statusEl.classList.remove('offline');
+      } catch (err) {
+        console.warn("Gagal terhubung ke Supabase, menggunakan LocalStorage/Default:", err);
+        appData = JSON.parse(localStorage.getItem('dashboardData')) || defaultData;
+        statusEl.innerText = "⚠ Mode Lokal / Offline";
+        statusEl.classList.add('offline');
+      }
+      render();
+    }
+
+    async function pushCloudData(dataToSave) {
+      localStorage.setItem('dashboardData', JSON.stringify(dataToSave));
+
+      try {
+        await fetch(`${SUPABASE_URL}/rest/v1/dashboard`, {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'resolution=merge-duplicates'
+          },
+          body: JSON.stringify({ id: 1, data: dataToSave })
+        });
+      } catch (err) {
+        console.error("Gagal melakukan push data ke Supabase:", err);
+      }
+    }
 
     function saveData() {
-      localStorage.setItem('dashboardData', JSON.stringify(appData));
+      pushCloudData(appData);
     }
 
     /* SISTEM LOGIN */
@@ -292,7 +347,9 @@
       const grid = document.getElementById('gridCards');
       grid.innerHTML = '';
 
-      const currentTables = appData.tabs[appData.activeTab].tables;
+      if (!appData.tabs[appData.activeTab]) return;
+
+      const currentTables = appData.tabs[appData.activeTab].tables || [];
 
       currentTables.forEach((table, tableIdx) => {
         const card = document.createElement('div');
@@ -444,7 +501,6 @@
     function resetData() {
       if (!isAdminLoggedIn) return;
       if (confirm("Reset seluruh data kembali ke tampilan awal?")) {
-        localStorage.removeItem('dashboardData');
         appData = JSON.parse(JSON.stringify(defaultData));
         saveData();
         render();
@@ -455,8 +511,9 @@
       return str.replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/\n/g, '\\n');
     }
 
-    // Jalankan awal
+    // Jalankan integrasi Supabase dan update tampilan awal
     updateAdminView();
+    fetchCloudData();
   </script>
 </body>
 </html>
