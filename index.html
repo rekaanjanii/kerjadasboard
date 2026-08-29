@@ -3,15 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DASBOARD KERJA INTERAKTIF</title>
+  <title>DASHBOARD KERJA INTERAKTIF</title>
   <style>
+    :root {
+      --bg-color: #eef2f5;
+      --card-bg: #ffffff;
+      --text-color: #333333;
+      --primary-color: #1d61e7;
+      --header-card-bg: #00e5ff;
+      --header-card-text: #000000;
+      --border-color: #111111;
+      --grid-cols: repeat(3, 1fr);
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { background-color: #eef2f5; padding: 20px; color: #333; }
-    .container { max-width: 1200px; margin: 0 auto; background-color: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+    body { background-color: var(--bg-color); padding: 20px; color: var(--text-color); transition: background-color 0.3s; }
+    .container { max-width: 1300px; margin: 0 auto; background-color: var(--card-bg); border-radius: 12px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
 
     /* HEADER */
     .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-    .header-title h1 { font-size: 22px; color: #1d61e7; font-weight: 800; letter-spacing: 0.5px; }
+    .header-title h1 { font-size: 22px; color: var(--primary-color); font-weight: 800; letter-spacing: 0.5px; }
     .header-title p { font-size: 13px; color: #777; margin-top: 2px; }
     .header-actions { display: flex; gap: 10px; align-items: center; }
     .badge-status { background-color: #d1e7dd; color: #0f5132; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
@@ -22,15 +33,15 @@
 
     /* SEARCH BAR */
     .search-box { margin-bottom: 20px; }
-    .search-label { font-size: 12px; font-weight: 700; color: #444; margin-bottom: 6px; }
+    .search-label { font-size: 12px; font-weight: 700; margin-bottom: 6px; }
     .search-input-wrapper { position: relative; }
-    .search-input-wrapper input { width: 100%; padding: 10px 15px 10px 38px; border: 1.5px solid #f6e05e; background-color: #fefcbf; border-radius: 8px; font-size: 13px; outline: none; }
+    .search-input-wrapper input { width: 100%; padding: 10px 15px 10px 38px; border: 1.5px solid #f6e05e; background-color: #fefcbf; border-radius: 8px; font-size: 13px; outline: none; color: #333; }
     .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #d69e2e; font-size: 14px; }
 
     /* ADMIN PANEL */
-    .admin-panel { border: 1.5px dashed #63b3ed; border-radius: 8px; padding: 12px 16px; display: none; justify-content: space-between; align-items: center; margin-bottom: 20px; background-color: #f7fafc; }
-    .admin-panel-title { font-size: 13px; font-weight: 700; color: #2b6cb0; }
-    .admin-buttons { display: flex; gap: 8px; }
+    .admin-panel { border: 1.5px dashed #63b3ed; border-radius: 8px; padding: 12px 16px; display: none; justify-content: space-between; align-items: center; margin-bottom: 20px; background-color: rgba(226, 232, 240, 0.2); }
+    .admin-panel-title { font-size: 13px; font-weight: 700; color: var(--primary-color); }
+    .admin-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
     .btn-panel { border: none; padding: 8px 14px; border-radius: 6px; color: #fff; font-size: 12px; font-weight: 700; cursor: pointer; }
     .btn-tambah { background-color: #00a86b; }
     .btn-kelola { background-color: #5856d6; }
@@ -38,22 +49,23 @@
     .btn-setup { background-color: #e67e22; }
 
     /* GRID TABLE */
-    .grid-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 25px; }
-    .card-table { border: 1px solid #111; border-radius: 8px; overflow: hidden; background: #fff; display: flex; flex-direction: column; }
-    .card-header { background-color: #00e5ff; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #111; }
-    .card-title { font-size: 13px; font-weight: 800; color: #000; text-transform: uppercase; }
+    .grid-cards { display: grid; grid-template-columns: var(--grid-cols); gap: 16px; margin-bottom: 25px; }
+    .card-table { border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; background: var(--card-bg); display: flex; flex-direction: column; }
+    .card-header { background-color: var(--header-card-bg); padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); }
+    .card-title { font-size: 13px; font-weight: 800; color: var(--header-card-text); text-transform: uppercase; }
     .card-actions { display: none; gap: 4px; }
+    .admin-mode .card-actions { display: flex; }
     .btn-icon { border: none; width: 22px; height: 22px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 11px; }
     .btn-edit-title { background-color: #f1c40f; color: #000; }
     .btn-delete-card { background-color: #e74c3c; color: #fff; }
 
     /* CONTENT TABLE */
     .table-content { width: 100%; border-collapse: collapse; flex-grow: 1; }
-    .table-content td { border-bottom: 1px solid #111; border-right: 1px solid #111; padding: 8px; font-size: 12px; vertical-align: top; }
+    .table-content td { border-bottom: 1px solid var(--border-color); border-right: 1px solid var(--border-color); padding: 8px; font-size: 12px; vertical-align: top; }
     .table-content td:last-child { border-right: none; }
     .table-content tr:last-child td { border-bottom: none; }
 
-    .col-num { width: 45px; text-align: center; background-color: #f9f9f9; }
+    .col-num { width: 45px; text-align: center; background-color: rgba(0,0,0,0.03); }
     .num-box { display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: 8px; }
     .num-box span { font-weight: 700; }
 
@@ -64,35 +76,42 @@
     .btn-copy.copied svg { stroke: #fff; }
 
     .cell-text-wrapper { display: flex; justify-content: space-between; gap: 8px; }
-    .cell-text { flex-grow: 1; white-space: pre-line; }
+    .cell-text { flex-grow: 1; white-space: pre-line; word-break: break-word; }
     .row-actions { display: none; flex-direction: column; gap: 4px; }
     .admin-mode .row-actions { display: flex; }
     .btn-row-opt { border: none; background: transparent; cursor: pointer; font-size: 11px; }
 
     /* CARD FOOTER */
-    .card-footer { border-top: 1px solid #111; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; background-color: #fff; font-size: 11px; font-weight: 700; }
-    .btn-tambah-kolom { color: #1d61e7; cursor: pointer; user-select: none; display: none; }
+    .card-footer { border-top: 1px solid var(--border-color); padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; background-color: var(--card-bg); font-size: 11px; font-weight: 700; }
+    .btn-tambah-kolom { color: var(--primary-color); cursor: pointer; user-select: none; display: none; }
+    .admin-mode .btn-tambah-kolom { display: inline; }
 
     /* FOOTER TABS */
     .footer-tabs { display: flex; gap: 10px; border-top: 1px solid #e2e8f0; padding-top: 15px; overflow-x: auto; }
     .tab-btn { padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 700; border: 1px solid #e2e8f0; background-color: #f8fafc; color: #475569; cursor: pointer; white-space: nowrap; }
-    .tab-btn.active { background-color: #2563eb; color: #fff; border-color: #2563eb; }
+    .tab-btn.active { background-color: var(--primary-color); color: #fff; border-color: var(--primary-color); }
     .tab-btn.dashed { border: 1px dashed #94a3b8; background-color: transparent; display: none; }
 
-    /* POPUP MODAL LOGIN ADMIN */
+    /* POPUP MODAL GENERATOR */
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 1000; }
-    .modal-card { background: #fff; border-radius: 12px; width: 100%; max-width: 360px; padding: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: center; }
-    .modal-card h2 { font-size: 18px; margin-bottom: 6px; color: #1d61e7; }
-    .modal-card p { font-size: 12px; color: #666; margin-bottom: 20px; }
-    .form-group { margin-bottom: 14px; text-align: left; }
+    .modal-card { background: #fff; border-radius: 12px; width: 100%; max-width: 480px; padding: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: left; color: #333; max-height: 90vh; overflow-y: auto; }
+    .modal-card h2 { font-size: 18px; margin-bottom: 6px; color: var(--primary-color); text-align: center; }
+    .modal-card p { font-size: 12px; color: #666; margin-bottom: 20px; text-align: center; }
+    .form-group { margin-bottom: 14px; }
     .form-group label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 4px; color: #444; }
-    .form-group input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; outline: none; }
-    .form-group input:focus { border-color: #1d61e7; }
+    .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; outline: none; }
     .modal-btns { display: flex; gap: 10px; margin-top: 20px; }
-    .btn-modal { flex: 1; padding: 10px; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 13px; }
-    .btn-modal-submit { background: #1d61e7; color: white; }
+    .btn-modal { flex: 1; padding: 10px; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 13px; text-align: center; }
+    .btn-modal-submit { background: var(--primary-color); color: white; }
     .btn-modal-cancel { background: #e2e8f0; color: #475569; }
-    .login-error { color: #e74c3c; font-size: 11px; margin-top: 8px; display: none; }
+    .login-error { color: #e74c3c; font-size: 11px; margin-top: 8px; display: none; text-align: center; }
+
+    /* TAB MANAGER LIST */
+    .tab-manager-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px; }
+    .tab-manager-item { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 8px 12px; border-radius: 6px; border: 1px solid #e2e8f0; }
+    .tab-manager-item span { font-size: 13px; font-weight: 600; }
+    .tab-item-actions { display: flex; gap: 4px; }
+    .btn-sm { padding: 4px 8px; font-size: 11px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
   </style>
 </head>
 <body>
@@ -101,7 +120,7 @@
     <!-- HEADER -->
     <div class="header">
       <div class="header-title">
-        <h1>DASBOARD KERJA</h1>
+        <h1>DASHBOARD KERJA</h1>
         <p>Sistem Manajemen Tabel & Informasi Real-time</p>
       </div>
       <div class="header-actions">
@@ -116,7 +135,7 @@
       <div class="search-label">🔍 KETIK JUDUL PENCARIAN ANDA</div>
       <div class="search-input-wrapper">
         <span class="search-icon">🔍</span>
-        <input type="text" id="searchInput" onkeyup="filterTables()" placeholder="Masukkan judul untuk mencari otomatis...">
+        <input type="text" id="searchInput" onkeyup="filterTables()" placeholder="Masukkan kata kunci untuk mencari otomatis...">
       </div>
     </div>
 
@@ -125,8 +144,8 @@
       <div class="admin-panel-title">⚙️ PANEL ADMIN DASHBOARD</div>
       <div class="admin-buttons">
         <button class="btn-panel btn-tambah" onclick="addTable()">+ Tambah Tabel</button>
-        <button class="btn-panel btn-kelola" onclick="alert('Fitur Kelola Halaman Aktif')">📁 Kelola Halaman</button>
-        <button class="btn-panel btn-tema" onclick="alert('Fitur Tema Aktif')">🎨 Tampilan & Tema</button>
+        <button class="btn-panel btn-kelola" onclick="openPageManagerModal()">📁 Kelola Halaman</button>
+        <button class="btn-panel btn-tema" onclick="openThemeModal()">🎨 Tampilan & Tema</button>
         <button class="btn-panel btn-setup" onclick="resetData()">🔄 Reset Data</button>
       </div>
     </div>
@@ -138,7 +157,7 @@
     <div class="footer-tabs" id="footerTabs"></div>
   </div>
 
-  <!-- POPUP MODAL LOGIN ADMIN -->
+  <!-- MODAL LOGIN ADMIN -->
   <div class="modal-overlay" id="loginModal">
     <div class="modal-card">
       <h2>Login Admin Mode</h2>
@@ -154,19 +173,61 @@
         </div>
         <div class="login-error" id="loginError">Username atau password salah!</div>
         <div class="modal-btns">
-          <button type="button" class="btn-modal btn-modal-cancel" onclick="closeLoginModal()">Batal</button>
+          <button type="button" class="btn-modal btn-modal-cancel" onclick="closeModal('loginModal')">Batal</button>
           <button type="submit" class="btn-modal btn-modal-submit">Masuk</button>
         </div>
       </form>
     </div>
   </div>
 
+  <!-- MODAL KELOLA HALAMAN (PAGE MANAGER) -->
+  <div class="modal-overlay" id="pageManagerModal">
+    <div class="modal-card">
+      <h2>Kelola Halaman Dashboard</h2>
+      <p>Atur nama, urutan, atau hapus halaman dashboard</p>
+      <div class="tab-manager-list" id="tabManagerList"></div>
+      <div class="modal-btns">
+        <button type="button" class="btn-modal btn-modal-submit" onclick="addPage()">+ Tambah Halaman Baru</button>
+        <button type="button" class="btn-modal btn-modal-cancel" onclick="closeModal('pageManagerModal')">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL TEMA & TAMPILAN -->
+  <div class="modal-overlay" id="themeModal">
+    <div class="modal-card">
+      <h2>Pengaturan Tampilan & Tema</h2>
+      <p>Sesuaikan tata letak dan skema warna dashboard</p>
+      <div class="form-group">
+        <label>Skema Warna / Tema</label>
+        <select id="themeSelect" onchange="applyThemeSetting(this.value)">
+          <option value="default">Default Blue (Biru Cerah)</option>
+          <option value="dark">Dark Modern (Gelap)</option>
+          <option value="barcelona">Barcelona Crimson (Merah / Biru)</option>
+          <option value="emerald">Emerald Fresh (Hijau Segar)</option>
+          <option value="gold">Luxury Gold (Emas Mewah)</option>
+          <option value="purple">Sunset Purple (Ungu Modern)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Jumlah Kolom Grid</label>
+        <select id="gridSelect" onchange="applyGridSetting(this.value)">
+          <option value="repeat(2, 1fr)">2 Kolom</option>
+          <option value="repeat(3, 1fr)">3 Kolom (Default)</option>
+          <option value="repeat(4, 1fr)">4 Kolom</option>
+        </select>
+      </div>
+      <div class="modal-btns">
+        <button type="button" class="btn-modal btn-modal-submit" onclick="closeModal('themeModal')">Selesai</button>
+      </div>
+    </div>
+  </div>
+
   <script>
-    // KONFIGURASI SUPABASE (ISIKAN DENGAN DATA DARI SUPABASE DASHBOARD)
+    // KONFIGURASI SUPABASE
     const SUPABASE_URL = "https://pmgpilaxrhdurvdolmoj.supabase.co"; 
     const SUPABASE_ANON_KEY = "sb_publishable_ibfjVja1d0jYvPqDGBb6Yg_XQXFDw7H";
 
-    // DATA LOGIN ADMIN DEFAULT
     const ADMIN_CREDENTIALS = {
       username: "admin",
       password: "admin123"
@@ -174,9 +235,13 @@
 
     let isAdminLoggedIn = false;
 
-    // DATA DEFAULT
+    // DATA DEFAULT DASHBOARD
     const defaultData = {
       activeTab: 0,
+      settings: {
+        theme: 'default',
+        gridCols: 'repeat(3, 1fr)'
+      },
       tabs: [
         {
           name: "JUDUL DASBORD 1",
@@ -206,7 +271,17 @@
 
     let appData = defaultData;
 
-    // SINKRONISASI DENGAN SUPABASE CLOUD
+    // TEMA WARNA
+    const themes = {
+      default: { bg: "#eef2f5", cardBg: "#ffffff", text: "#333333", primary: "#1d61e7", headerCardBg: "#00e5ff", headerCardText: "#000000", border: "#111111" },
+      dark: { bg: "#121212", cardBg: "#1e1e1e", text: "#e0e0e0", primary: "#bb86fc", headerCardBg: "#2d2d2d", headerCardText: "#ffffff", border: "#333333" },
+      barcelona: { bg: "#0a1128", cardBg: "#1c2541", text: "#ffffff", primary: "#ed1c24", headerCardBg: "#a50044", headerCardText: "#ffed00", border: "#004d98" },
+      emerald: { bg: "#e8f5e9", cardBg: "#ffffff", text: "#1b5e20", primary: "#2e7d32", headerCardBg: "#a5d6a7", headerCardText: "#0d5302", border: "#1b5e20" },
+      gold: { bg: "#1a1a1a", cardBg: "#262626", text: "#f5f5f5", primary: "#d4af37", headerCardBg: "#d4af37", headerCardText: "#000000", border: "#d4af37" },
+      purple: { bg: "#f3e5f5", cardBg: "#ffffff", text: "#4a148c", primary: "#8e24aa", headerCardBg: "#ce93d8", headerCardText: "#3b0066", border: "#4a148c" }
+    };
+
+    // SINKRONISASI SUPABASE
     async function fetchCloudData() {
       const statusEl = document.getElementById('dbStatus');
       try {
@@ -222,6 +297,7 @@
         const result = await response.json();
         if (result && result.length > 0) {
           appData = result[0].data;
+          if(!appData.settings) appData.settings = defaultData.settings;
         } else {
           await pushCloudData(defaultData);
         }
@@ -231,9 +307,12 @@
       } catch (err) {
         console.warn("Gagal terhubung ke Supabase, menggunakan LocalStorage/Default:", err);
         appData = JSON.parse(localStorage.getItem('dashboardData')) || defaultData;
+        if(!appData.settings) appData.settings = defaultData.settings;
         statusEl.innerText = "⚠ Mode Lokal / Offline";
         statusEl.classList.add('offline');
       }
+      applyThemeSetting(appData.settings.theme || 'default');
+      applyGridSetting(appData.settings.gridCols || 'repeat(3, 1fr)');
       render();
     }
 
@@ -252,7 +331,7 @@
           body: JSON.stringify({ id: 1, data: dataToSave })
         });
       } catch (err) {
-        console.error("Gagal melakukan push data ke Supabase:", err);
+        console.error("Gagal push data:", err);
       }
     }
 
@@ -260,17 +339,19 @@
       pushCloudData(appData);
     }
 
-    /* SISTEM LOGIN */
+    /* SISTEM LOGIN ADMIN */
     function openLoginModal() {
       document.getElementById('loginModal').style.display = 'flex';
       document.getElementById('loginUser').focus();
     }
 
-    function closeLoginModal() {
-      document.getElementById('loginModal').style.display = 'none';
-      document.getElementById('loginError').style.display = 'none';
-      document.getElementById('loginUser').value = '';
-      document.getElementById('loginPass').value = '';
+    function closeModal(modalId) {
+      document.getElementById(modalId).style.display = 'none';
+      if(modalId === 'loginModal') {
+        document.getElementById('loginError').style.display = 'none';
+        document.getElementById('loginUser').value = '';
+        document.getElementById('loginPass').value = '';
+      }
     }
 
     function handleLogin(e) {
@@ -280,7 +361,7 @@
 
       if (user === ADMIN_CREDENTIALS.username && pass === ADMIN_CREDENTIALS.password) {
         isAdminLoggedIn = true;
-        closeLoginModal();
+        closeModal('loginModal');
         updateAdminView();
       } else {
         document.getElementById('loginError').style.display = 'block';
@@ -313,7 +394,116 @@
       render();
     }
 
-    /* RENDER TAMPILAN */
+    /* SISTEM TEMA & LAYOUT */
+    function openThemeModal() {
+      document.getElementById('themeSelect').value = appData.settings.theme || 'default';
+      document.getElementById('gridSelect').value = appData.settings.gridCols || 'repeat(3, 1fr)';
+      document.getElementById('themeModal').style.display = 'flex';
+    }
+
+    function applyThemeSetting(themeKey) {
+      const theme = themes[themeKey] || themes.default;
+      const root = document.documentElement;
+      root.style.setProperty('--bg-color', theme.bg);
+      root.style.setProperty('--card-bg', theme.cardBg);
+      root.style.setProperty('--text-color', theme.text);
+      root.style.setProperty('--primary-color', theme.primary);
+      root.style.setProperty('--header-card-bg', theme.headerCardBg);
+      root.style.setProperty('--header-card-text', theme.headerCardText);
+      root.style.setProperty('--border-color', theme.border);
+      
+      appData.settings.theme = themeKey;
+      saveData();
+    }
+
+    function applyGridSetting(gridValue) {
+      document.documentElement.style.setProperty('--grid-cols', gridValue);
+      appData.settings.gridCols = gridValue;
+      saveData();
+    }
+
+    /* KELOLA HALAMAN (TAB MANAGER) */
+    function openPageManagerModal() {
+      renderPageManagerList();
+      document.getElementById('pageManagerModal').style.display = 'flex';
+    }
+
+    function renderPageManagerList() {
+      const container = document.getElementById('tabManagerList');
+      container.innerHTML = '';
+
+      appData.tabs.forEach((tab, idx) => {
+        const item = document.createElement('div');
+        item.className = 'tab-manager-item';
+        item.innerHTML = `
+          <span>${idx + 1}. ${tab.name}</span>
+          <div class="tab-item-actions">
+            <button class="btn-sm btn-edit-title" onclick="renamePage(${idx})" title="Rename">✏️</button>
+            <button class="btn-sm btn-tambah" onclick="movePage(${idx}, -1)" ${idx === 0 ? 'disabled' : ''} title="Naik">⬆️</button>
+            <button class="btn-sm btn-tambah" onclick="movePage(${idx}, 1)" ${idx === appData.tabs.length - 1 ? 'disabled' : ''} title="Turun">⬇️</button>
+            <button class="btn-sm btn-delete-card" onclick="deletePage(${idx})" ${appData.tabs.length <= 1 ? 'disabled' : ''} title="Hapus">🗑️</button>
+          </div>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    function renamePage(index) {
+      const newName = prompt("Masukkan nama baru untuk halaman ini:", appData.tabs[index].name);
+      if (newName) {
+        appData.tabs[index].name = newName;
+        saveData();
+        render();
+        renderPageManagerList();
+      }
+    }
+
+    function movePage(index, direction) {
+      const newIndex = index + direction;
+      if (newIndex < 0 || newIndex >= appData.tabs.length) return;
+      const temp = appData.tabs[index];
+      appData.tabs[index] = appData.tabs[newIndex];
+      appData.tabs[newIndex] = temp;
+
+      if (appData.activeTab === index) appData.activeTab = newIndex;
+      else if (appData.activeTab === newIndex) appData.activeTab = index;
+
+      saveData();
+      render();
+      renderPageManagerList();
+    }
+
+    function deletePage(index) {
+      if (appData.tabs.length <= 1) {
+        alert("Harus ada minimal satu halaman!");
+        return;
+      }
+      if (confirm(`Apakah Anda yakin ingin menghapus halaman "${appData.tabs[index].name}"?`)) {
+        appData.tabs.splice(index, 1);
+        if (appData.activeTab >= appData.tabs.length) {
+          appData.activeTab = appData.tabs.length - 1;
+        }
+        saveData();
+        render();
+        renderPageManagerList();
+      }
+    }
+
+    function addPage() {
+      if (!isAdminLoggedIn) return;
+      const pageName = prompt("Masukkan Nama Halaman/Tab Baru:");
+      if (pageName) {
+        appData.tabs.push({ name: pageName, tables: [] });
+        appData.activeTab = appData.tabs.length - 1;
+        saveData();
+        render();
+        if(document.getElementById('pageManagerModal').style.display === 'flex') {
+          renderPageManagerList();
+        }
+      }
+    }
+
+    /* RENDER TAMPILAN DASHBOARD */
     function render() {
       renderTabs();
       renderTables();
@@ -356,19 +546,20 @@
         card.className = 'card-table';
         card.setAttribute('data-title', table.title.toLowerCase());
 
-        let rowsHtml = table.rows.map((rowText, rowIdx) => `
+        let rowsHtml = table.rows.map((rowText, rowIdx) => {
+          return `
           <tr>
             <td class="col-num">
               <div class="num-box">
                 <span>${rowIdx + 1}</span>
-                <button class="btn-copy" onclick="copyText('${escapeQuotes(rowText)}', this)" title="Salin Teks">
+                <button class="btn-copy" data-text="${encodeURIComponent(rowText)}" onclick="copyTextFromBtn(this)" title="Salin Teks">
                   <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
                 </button>
               </div>
             </td>
             <td>
               <div class="cell-text-wrapper">
-                <div class="cell-text">${rowText}</div>
+                <div class="cell-text">${escapeHtml(rowText)}</div>
                 <div class="row-actions">
                   <button class="btn-row-opt" onclick="editRow(${tableIdx}, ${rowIdx})" title="Edit Baris">✏️</button>
                   <button class="btn-row-opt" onclick="deleteRow(${tableIdx}, ${rowIdx})" title="Hapus Baris">🗑️</button>
@@ -376,12 +567,13 @@
               </div>
             </td>
           </tr>
-        `).join('');
+        `;
+        }).join('');
 
         card.innerHTML = `
           <div class="card-header">
-            <span class="card-title">${table.title}</span>
-            <div class="card-actions" style="display: ${isAdminLoggedIn ? 'flex' : 'none'}">
+            <span class="card-title">${escapeHtml(table.title)}</span>
+            <div class="card-actions">
               <button class="btn-icon btn-edit-title" onclick="editTableTitle(${tableIdx})" title="Edit Judul Tabel">✏️</button>
               <button class="btn-icon btn-delete-card" onclick="deleteTable(${tableIdx})" title="Hapus Tabel">🗑️</button>
             </div>
@@ -391,7 +583,7 @@
           </table>
           <div class="card-footer">
             <span>TAMBAH BARIS/KOLOM</span>
-            <span class="btn-tambah-kolom" style="display: ${isAdminLoggedIn ? 'inline' : 'none'}" onclick="addRow(${tableIdx})">+ Tambah</span>
+            <span class="btn-tambah-kolom" onclick="addRow(${tableIdx})">+ Tambah</span>
           </div>
         `;
 
@@ -399,8 +591,9 @@
       });
     }
 
-    /* SALIN TEKS */
-    function copyText(text, button) {
+    /* SALIN TEKS AMAN */
+    function copyTextFromBtn(button) {
+      const text = decodeURIComponent(button.getAttribute('data-text'));
       navigator.clipboard.writeText(text).then(() => {
         const originalIcon = button.innerHTML;
         button.classList.add('copied');
@@ -412,7 +605,7 @@
       });
     }
 
-    /* AKSI ADMIN */
+    /* AKSI TABEL & BARIS */
     function addTable() {
       if (!isAdminLoggedIn) return;
       const title = prompt("Masukkan Judul Tabel Baru:");
@@ -473,17 +666,6 @@
       }
     }
 
-    function addPage() {
-      if (!isAdminLoggedIn) return;
-      const pageName = prompt("Masukkan Nama Halaman/Tab Baru:");
-      if (pageName) {
-        appData.tabs.push({ name: pageName, tables: [] });
-        appData.activeTab = appData.tabs.length - 1;
-        saveData();
-        render();
-      }
-    }
-
     function filterTables() {
       const query = document.getElementById('searchInput').value.toLowerCase();
       const cards = document.querySelectorAll('.card-table');
@@ -503,15 +685,17 @@
       if (confirm("Reset seluruh data kembali ke tampilan awal?")) {
         appData = JSON.parse(JSON.stringify(defaultData));
         saveData();
+        applyThemeSetting('default');
+        applyGridSetting('repeat(3, 1fr)');
         render();
       }
     }
 
-    function escapeQuotes(str) {
-      return str.replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/\n/g, '\\n');
+    function escapeHtml(str) {
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
     }
 
-    // Jalankan integrasi Supabase dan update tampilan awal
+    // Inisialisasi awal
     updateAdminView();
     fetchCloudData();
   </script>
