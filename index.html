@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DASBOARD KERJA INTERAKTIF</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: #eef2f5; padding: 20px; color: #333; }
+    .container { max-width: 1200px; margin: 0 auto; background-color: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+
+    /* HEADER */
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .header-title h1 { font-size: 22px; color: #1d61e7; font-weight: 800; letter-spacing: 0.5px; }
+    .header-title p { font-size: 13px; color: #777; margin-top: 2px; }
+    .header-actions { display: flex; gap: 10px; align-items: center; }
+    .badge-status { background-color: #d1e7dd; color: #0f5132; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+    .btn-header { border: none; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; }
+    .btn-admin { background-color: #d0e1fd; color: #0d47a1; }
+    .btn-logout { background-color: #e53935; color: #fff; display: none; }
+
+    /* SEARCH BAR */
+    .search-box { margin-bottom: 20px; }
+    .search-label { font-size: 12px; font-weight: 700; color: #444; margin-bottom: 6px; }
+    .search-input-wrapper { position: relative; }
+    .search-input-wrapper input { width: 100%; padding: 10px 15px 10px 38px; border: 1.5px solid #f6e05e; background-color: #fefcbf; border-radius: 8px; font-size: 13px; outline: none; }
+    .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #d69e2e; font-size: 14px; }
+
+    /* ADMIN PANEL */
+    .admin-panel { border: 1.5px dashed #63b3ed; border-radius: 8px; padding: 12px 16px; display: none; justify-content: space-between; align-items: center; margin-bottom: 20px; background-color: #f7fafc; }
+    .admin-panel-title { font-size: 13px; font-weight: 700; color: #2b6cb0; }
+    .admin-buttons { display: flex; gap: 8px; }
+    .btn-panel { border: none; padding: 8px 14px; border-radius: 6px; color: #fff; font-size: 12px; font-weight: 700; cursor: pointer; }
+    .btn-tambah { background-color: #00a86b; }
+    .btn-kelola { background-color: #5856d6; }
+    .btn-tema { background-color: #af52de; }
+    .btn-setup { background-color: #e67e22; }
+
+    /* GRID TABLE */
+    .grid-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 25px; }
+    .card-table { border: 1px solid #111; border-radius: 8px; overflow: hidden; background: #fff; display: flex; flex-direction: column; }
+    .card-header { background-color: #00e5ff; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #111; }
+    .card-title { font-size: 13px; font-weight: 800; color: #000; text-transform: uppercase; }
+    .card-actions { display: none; gap: 4px; }
+    .btn-icon { border: none; width: 22px; height: 22px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 11px; }
+    .btn-edit-title { background-color: #f1c40f; color: #000; }
+    .btn-delete-card { background-color: #e74c3c; color: #fff; }
+
+    /* CONTENT TABLE */
+    .table-content { width: 100%; border-collapse: collapse; flex-grow: 1; }
+    .table-content td { border-bottom: 1px solid #111; border-right: 1px solid #111; padding: 8px; font-size: 12px; vertical-align: top; }
+    .table-content td:last-child { border-right: none; }
+    .table-content tr:last-child td { border-bottom: none; }
+
+    .col-num { width: 45px; text-align: center; background-color: #f9f9f9; }
+    .num-box { display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: 8px; }
+    .num-box span { font-weight: 700; }
+
+    /* TOMBOL COPY & ROW ACTION */
+    .btn-copy { background-color: #fff; border: 1.5px solid #e74c3c; border-radius: 4px; width: 26px; height: 26px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; }
+    .btn-copy svg { fill: none; stroke: #e74c3c; stroke-width: 2; width: 14px; height: 14px; }
+    .btn-copy.copied { background-color: #2ecc71; border-color: #2ecc71; }
+    .btn-copy.copied svg { stroke: #fff; }
+
+    .cell-text-wrapper { display: flex; justify-content: space-between; gap: 8px; }
+    .cell-text { flex-grow: 1; white-space: pre-line; }
+    .row-actions { display: none; flex-direction: column; gap: 4px; }
+    .admin-mode .row-actions { display: flex; }
+    .btn-row-opt { border: none; background: transparent; cursor: pointer; font-size: 11px; }
+
+    /* CARD FOOTER */
+    .card-footer { border-top: 1px solid #111; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; background-color: #fff; font-size: 11px; font-weight: 700; }
+    .btn-tambah-kolom { color: #1d61e7; cursor: pointer; user-select: none; display: none; }
+
+    /* FOOTER TABS */
+    .footer-tabs { display: flex; gap: 10px; border-top: 1px solid #e2e8f0; padding-top: 15px; overflow-x: auto; }
+    .tab-btn { padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 700; border: 1px solid #e2e8f0; background-color: #f8fafc; color: #475569; cursor: pointer; white-space: nowrap; }
+    .tab-btn.active { background-color: #2563eb; color: #fff; border-color: #2563eb; }
+    .tab-btn.dashed { border: 1px dashed #94a3b8; background-color: transparent; display: none; }
+
+    /* POPUP MODAL LOGIN */
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 1000; }
+    .modal-card { background: #fff; border-radius: 12px; width: 100%; max-width: 360px; padding: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: center; }
+    .modal-card h2 { font-size: 18px; margin-bottom: 6px; color: #1d61e7; }
+    .modal-card p { font-size: 12px; color: #666; margin-bottom: 20px; }
+    .form-group { margin-bottom: 14px; text-align: left; }
+    .form-group label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 4px; color: #444; }
+    .form-group input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; outline: none; }
+    .form-group input:focus { border-color: #1d61e7; }
+    .modal-btns { display: flex; gap: 10px; margin-top: 20px; }
+    .btn-modal { flex: 1; padding: 10px; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 13px; }
+    .btn-modal-submit { background: #1d61e7; color: white; }
+    .btn-modal-cancel { background: #e2e8f0; color: #475569; }
+    .login-error { color: #e74c3c; font-size: 11px; margin-top: 8px; display: none; }
+  </style>
+</head>
+<body>
+
+  <div class="container" id="appContainer">
+    <!-- HEADER -->
+    <div class="header">
+      <div class="header-title">
+        <h1>DASBOARD KERJA</h1>
+        <p>Sistem Manajemen Tabel & Informasi Real-time</p>
+      </div>
+      <div class="header-actions">
+        <div class="badge-status">☁ Tersimpan (Online/Local)</div>
+        <button class="btn-header btn-admin" id="btnAdminLogin" onclick="openLoginModal()">👤 Admin Mode</button>
+        <button class="btn-header btn-logout" id="btnLogout" onclick="logoutAdmin()">Logout</button>
+      </div>
+    </div>
+
+    <!-- SEARCH BAR -->
+    <div class="search-box">
+      <div class="search-label">🔍 KETIK JUDUL PENCARIAN ANDA</div>
+      <div class="search-input-wrapper">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" onkeyup="filterTables()" placeholder="Masukkan judul untuk mencari otomatis...">
+      </div>
+    </div>
+
+    <!-- PANEL ADMIN -->
+    <div class="admin-panel" id="adminPanel">
+      <div class="admin-panel-title">⚙️ PANEL ADMIN DASHBOARD</div>
+      <div class="admin-buttons">
+        <button class="btn-panel btn-tambah" onclick="addTable()">+ Tambah Tabel</button>
+        <button class="btn-panel btn-kelola" onclick="alert('Fitur Kelola Halaman Aktif')">📁 Kelola Halaman</button>
+        <button class="btn-panel btn-tema" onclick="alert('Fitur Tema Aktif')">🎨 Tampilan & Tema</button>
+        <button class="btn-panel btn-setup" onclick="resetData()">🔄 Reset Data</button>
+      </div>
+    </div>
+
+    <!-- GRID CARD TABLES -->
+    <div class="grid-cards" id="gridCards"></div>
+
+    <!-- FOOTER TABS -->
+    <div class="footer-tabs" id="footerTabs"></div>
+  </div>
+
+  <!-- POPUP MODAL LOGIN ADMIN -->
+  <div class="modal-overlay" id="loginModal">
+    <div class="modal-card">
+      <h2>Login Admin Mode</h2>
+      <p>Masukkan username & password untuk akses pengeditan</p>
+      <form onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" id="loginUser" placeholder="Masukkan username" required autocomplete="off">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="loginPass" placeholder="Masukkan password" required>
+        </div>
+        <div class="login-error" id="loginError">Username atau password salah!</div>
+        <div class="modal-btns">
+          <button type="button" class="btn-modal btn-modal-cancel" onclick="closeLoginModal()">Batal</button>
+          <button type="submit" class="btn-modal btn-modal-submit">Masuk</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // KREDENSIAL ADMIN DEFAULT
+    const ADMIN_CREDENTIALS = {
+      username: "admin",
+      password: "admin123"
+    };
+
+    let isAdminLoggedIn = false;
+
+    // DATA DASHBOARD
+    const defaultData = {
+      activeTab: 0,
+      tabs: [
+        {
+          name: "JUDUL DASBORD 1",
+          tables: [
+            {
+              title: "AKUN TEST",
+              rows: [
+                "Baik bosku,Kami ingin menginformasikan bahwa untuk data yang anda berikan saat ini sedang dalam tahap proses verifikasi. Jika data yang anda berikan sudah sesuai maka untuk bonus event tersebut akan langsung bertambah pada saldo akun anda. Kami sangat menyarankan anda untuk mengecek saldo akun anda secara berkala ya bosku",
+                "Isi Baris 2",
+                "Isi Baris 3"
+              ]
+            },
+            {
+              title: "AKUN TEST 2",
+              rows: ["Isi Data A", "Isi Data B", "Isi Data C"]
+            },
+            {
+              title: "JUDUL 3",
+              rows: ["Proyek Alpha", "Proyek Beta", "Proyek Gamma"]
+            }
+          ]
+        },
+        { name: "JUDUL DASBORD 2", tables: [] },
+        { name: "JUDUL DASBORD 3", tables: [] }
+      ]
+    };
+
+    let appData = JSON.parse(localStorage.getItem('dashboardData')) || defaultData;
+
+    function saveData() {
+      localStorage.setItem('dashboardData', JSON.stringify(appData));
+    }
+
+    /* MODAL LOGIN CONTROLLER */
+    function openLoginModal() {
+      document.getElementById('loginModal').style.display = 'flex';
+      document.getElementById('loginUser').focus();
+    }
+
+    function closeLoginModal() {
+      document.getElementById('loginModal').style.display = 'none';
+      document.getElementById('loginError').style.display = 'none';
+      document.getElementById('loginUser').value = '';
+      document.getElementById('loginPass').value = '';
+    }
+
+    function handleLogin(e) {
+      e.preventDefault();
+      const user = document.getElementById('loginUser').value;
+      const pass = document.getElementById('loginPass').value;
+
+      if (user === ADMIN_CREDENTIALS.username && pass === ADMIN_CREDENTIALS.password) {
+        isAdminLoggedIn = true;
+        closeLoginModal();
+        updateAdminView();
+      } else {
+        document.getElementById('loginError').style.display = 'block';
+      }
+    }
+
+    function logoutAdmin() {
+      isAdminLoggedIn = false;
+      updateAdminView();
+    }
+
+    function updateAdminView() {
+      const adminPanel = document.getElementById('adminPanel');
+      const btnLogout = document.getElementById('btnLogout');
+      const btnAdminLogin = document.getElementById('btnAdminLogin');
+      const container = document.getElementById('appContainer');
+
+      if (isAdminLoggedIn) {
+        adminPanel.style.display = 'flex';
+        btnLogout.style.display = 'inline-block';
+        btnAdminLogin.style.display = 'none';
+        container.classList.add('admin-mode');
+      } else {
+        adminPanel.style.display = 'none';
+        btnLogout.style.display = 'none';
+        btnAdminLogin.style.display = 'inline-block';
+        container.classList.remove('admin-mode');
+      }
+
+      render();
+    }
+
+    /* RENDER CORE */
+    function render() {
+      renderTabs();
+      renderTables();
+    }
+
+    function renderTabs() {
+      const tabsContainer = document.getElementById('footerTabs');
+      tabsContainer.innerHTML = '';
+
+      appData.tabs.forEach((tab, index) => {
+        const btn = document.createElement('button');
+        btn.className = `tab-btn ${index === appData.activeTab ? 'active' : ''}`;
+        btn.innerText = tab.name;
+        btn.onclick = () => {
+          appData.activeTab = index;
+          saveData();
+          render();
+        };
+        tabsContainer.appendChild(btn);
+      });
+
+      const addTabBtn = document.createElement('button');
+      addTabBtn.className = 'tab-btn dashed';
+      addTabBtn.innerText = '+ TAMBAH HALAMAN';
+      addTabBtn.style.display = isAdminLoggedIn ? 'inline-block' : 'none';
+      addTabBtn.onclick = addPage;
+      tabsContainer.appendChild(addTabBtn);
+    }
+
+    function renderTables() {
+      const grid = document.getElementById('gridCards');
+      grid.innerHTML = '';
+
+      const currentTables = appData.tabs[appData.activeTab].tables;
+
+      currentTables.forEach((table, tableIdx) => {
+        const card = document.createElement('div');
+        card.className = 'card-table';
+        card.setAttribute('data-title', table.title.toLowerCase());
+
+        let rowsHtml = table.rows.map((rowText, rowIdx) => `
+          <tr>
+            <td class="col-num">
+              <div class="num-box">
+                <span>${rowIdx + 1}</span>
+                <button class="btn-copy" onclick="copyText('${escapeQuotes(rowText)}', this)" title="Salin Teks">
+                  <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                </button>
+              </div>
+            </td>
+            <td>
+              <div class="cell-text-wrapper">
+                <div class="cell-text">${rowText}</div>
+                <div class="row-actions">
+                  <button class="btn-row-opt" onclick="editRow(${tableIdx}, ${rowIdx})" title="Edit Baris">✏️</button>
+                  <button class="btn-row-opt" onclick="deleteRow(${tableIdx}, ${rowIdx})" title="Hapus Baris">🗑️</button>
+                </div>
+              </div>
+            </td>
+          </tr>
+        `).join('');
+
+        card.innerHTML = `
+          <div class="card-header">
+            <span class="card-title">${table.title}</span>
+            <div class="card-actions" style="display: ${isAdminLoggedIn ? 'flex' : 'none'}">
+              <button class="btn-icon btn-edit-title" onclick="editTableTitle(${tableIdx})" title="Edit Judul Tabel">✏️</button>
+              <button class="btn-icon btn-delete-card" onclick="deleteTable(${tableIdx})" title="Hapus Tabel">🗑️</button>
+            </div>
+          </div>
+          <table class="table-content">
+            ${rowsHtml}
+          </table>
+          <div class="card-footer">
+            <span>TAMBAH BARIS/KOLOM</span>
+            <span class="btn-tambah-kolom" style="display: ${isAdminLoggedIn ? 'inline' : 'none'}" onclick="addRow(${tableIdx})">+ Tambah</span>
+          </div>
+        `;
+
+        grid.appendChild(card);
+      });
+    }
+
+    /* COPY FUNCTION */
+    function copyText(text, button) {
+      navigator.clipboard.writeText(text).then(() => {
+        const originalIcon = button.innerHTML;
+        button.classList.add('copied');
+        button.innerHTML = '<svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke="#fff" stroke-width="3" fill="none"/></svg>';
+        setTimeout(() => {
+          button.classList.remove('copied');
+          button.innerHTML = originalIcon;
+        }, 1500);
+      });
+    }
+
+    /* ACTIONS (ADMIN PROTECTED) */
+    function addTable() {
+      if (!isAdminLoggedIn) return;
+      const title = prompt("Masukkan Judul Tabel Baru:");
+      if (title) {
+        appData.tabs[appData.activeTab].tables.push({ title: title, rows: ["Isi Baris Baru"] });
+        saveData();
+        render();
+      }
+    }
+
+    function editTableTitle(tableIdx) {
+      if (!isAdminLoggedIn) return;
+      const currentTitle = appData.tabs[appData.activeTab].tables[tableIdx].title;
+      const newTitle = prompt("Edit Judul Tabel:", currentTitle);
+      if (newTitle) {
+        appData.tabs[appData.activeTab].tables[tableIdx].title = newTitle;
+        saveData();
+        render();
+      }
+    }
+
+    function deleteTable(tableIdx) {
+      if (!isAdminLoggedIn) return;
+      if (confirm("Apakah Anda yakin ingin menghapus tabel ini?")) {
+        appData.tabs[appData.activeTab].tables.splice(tableIdx, 1);
+        saveData();
+        render();
+      }
+    }
+
+    function addRow(tableIdx) {
+      if (!isAdminLoggedIn) return;
+      const text = prompt("Masukkan Isi Teks Baris Baru:");
+      if (text !== null) {
+        appData.tabs[appData.activeTab].tables[tableIdx].rows.push(text || "Isi Baru");
+        saveData();
+        render();
+      }
+    }
+
+    function editRow(tableIdx, rowIdx) {
+      if (!isAdminLoggedIn) return;
+      const currentText = appData.tabs[appData.activeTab].tables[tableIdx].rows[rowIdx];
+      const newText = prompt("Edit Isi Baris Teks:", currentText);
+      if (newText !== null) {
+        appData.tabs[appData.activeTab].tables[tableIdx].rows[rowIdx] = newText;
+        saveData();
+        render();
+      }
+    }
+
+    function deleteRow(tableIdx, rowIdx) {
+      if (!isAdminLoggedIn) return;
+      if (confirm("Hapus baris ini?")) {
+        appData.tabs[appData.activeTab].tables[tableIdx].rows.splice(rowIdx, 1);
+        saveData();
+        render();
+      }
+    }
+
+    function addPage() {
+      if (!isAdminLoggedIn) return;
+      const pageName = prompt("Masukkan Nama Halaman/Tab Baru:");
+      if (pageName) {
+        appData.tabs.push({ name: pageName, tables: [] });
+        appData.activeTab = appData.tabs.length - 1;
+        saveData();
+        render();
+      }
+    }
+
+    function filterTables() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      const cards = document.querySelectorAll('.card-table');
+      cards.forEach(card => {
+        const title = card.getAttribute('data-title');
+        const textContent = card.innerText.toLowerCase();
+        if (title.includes(query) || textContent.includes(query)) {
+          card.style.display = "flex";
+        } else {
+          card.style.display = "none";
+        }
+      });
+    }
+
+    function resetData() {
+      if (!isAdminLoggedIn) return;
+      if (confirm("Reset seluruh data kembali ke tampilan awal?")) {
+        localStorage.removeItem('dashboardData');
+        appData = JSON.parse(JSON.stringify(defaultData));
+        saveData();
+        render();
+      }
+    }
+
+    function escapeQuotes(str) {
+      return str.replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/\n/g, '\\n');
+    }
+
+    // Inisialisasi awal
+    updateAdminView();
+  </script>
+</body>
+</html>
