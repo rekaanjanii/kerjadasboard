@@ -18,13 +18,12 @@
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
     body { background-color: var(--bg-color); padding: 20px; color: var(--text-color); transition: background-color 0.3s; }
-    .container { max-width: 1400px; margin: 0 auto; background-color: var(--card-bg); border-radius: 12px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+    .container { max-width: 1500px; margin: 0 auto; background-color: var(--card-bg); border-radius: 12px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
 
     /* HEADER */
     .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 15px; }
     .header-left { display: flex; align-items: center; gap: 15px; }
     
-    /* FOTO PROFIL HEADER */
     .profile-avatar { width: 55px; height: 55px; border-radius: 50%; border: 2.5px solid var(--border-color); object-fit: cover; background-color: rgba(255,255,255,0.1); box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
 
     .header-title h1 { font-size: 22px; color: var(--primary-color); font-weight: 800; letter-spacing: 0.5px; }
@@ -63,17 +62,24 @@
     .btn-edit-title { background-color: #f1c40f; color: #000; }
     .btn-delete-card { background-color: #e74c3c; color: #fff; }
 
-    /* CONTENT TABLE DENGAN UKURAN FIX */
+    /* CONTENT TABLE DENGAN KETERANGAN */
     .table-content { width: 100%; border-collapse: collapse; flex-grow: 1; table-layout: fixed; }
     .table-content td { border-bottom: 1px solid var(--border-color); border-right: 1px solid var(--border-color); padding: 8px; font-size: 12px; vertical-align: top; }
     .table-content td:last-child { border-right: none; }
     .table-content tr:last-child td { border-bottom: none; }
 
+    /* KOLOM KETERANGAN (BARU) */
+    .col-label { width: 110px; background-color: rgba(255, 255, 255, 0.03); font-weight: 700; color: var(--border-color); word-break: break-word; }
+    .label-wrapper { display: flex; justify-content: space-between; gap: 4px; align-items: flex-start; }
+    .label-text { flex-grow: 1; font-size: 11px; line-height: 1.3; }
+    .btn-edit-label { background: transparent; border: none; cursor: pointer; font-size: 10px; opacity: 0.7; display: none; }
+    .admin-mode .btn-edit-label { display: inline-block; }
+
     .col-num { width: 45px; text-align: center; background-color: rgba(0,0,0,0.15); }
     .num-box { display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: 8px; }
     .num-box span { font-weight: 700; }
 
-    /* MODIFIKASI UKURAN TEKS KONSISTEN & SCROLLBAR DAN TIDAK MEMBESARKAN TABEL */
+    /* TEXT WRAPPER & SCROLLBAR */
     .cell-text-wrapper { display: flex; justify-content: space-between; gap: 8px; align-items: flex-start; }
     .cell-text { 
       flex-grow: 1; 
@@ -84,7 +90,6 @@
       padding-right: 4px;
     }
 
-    /* KUSTOMISASI SCROLLBAR PADA TEKS */
     .cell-text::-webkit-scrollbar { width: 4px; }
     .cell-text::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); border-radius: 4px; }
     .cell-text::-webkit-scrollbar-thumb { background: var(--primary-color); border-radius: 4px; }
@@ -110,14 +115,14 @@
     .tab-btn.active { background-color: var(--primary-color); color: #fff; border-color: var(--primary-color); }
     .tab-btn.dashed { border: 1px dashed #94a3b8; background-color: transparent; display: none; }
 
-    /* POPUP MODAL UNIFIED SETTINGS */
+    /* POPUP MODAL */
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 1000; }
     .modal-card { background: #fff; border-radius: 12px; width: 100%; max-width: 520px; padding: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); text-align: left; color: #333; max-height: 90vh; overflow-y: auto; }
     .modal-card h2 { font-size: 18px; margin-bottom: 6px; color: #1d61e7; text-align: center; }
     .modal-card p { font-size: 12px; color: #666; margin-bottom: 20px; text-align: center; }
     .form-group { margin-bottom: 16px; }
     .form-group label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 6px; color: #444; }
-    .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; outline: none; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; outline: none; }
     .modal-btns { display: flex; gap: 10px; margin-top: 20px; }
     .btn-modal { flex: 1; padding: 10px; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 13px; text-align: center; }
     .btn-modal-submit { background: #1d61e7; color: white; }
@@ -139,7 +144,6 @@
     <!-- HEADER -->
     <div class="header">
       <div class="header-left">
-        <!-- FOTO PROFIL HEADER -->
         <img id="profileImage" class="profile-avatar" src="https://via.placeholder.com/150" alt="Foto Profil" onerror="this.src='https://via.placeholder.com/150'">
         <div class="header-title">
           <h1>DASHBOARD KERJA</h1>
@@ -208,7 +212,6 @@
       <h2>⚙️ Pusat Pengaturan Dashboard</h2>
       <p>Atur Foto Profil, Judul Halaman, Susunan Tab, Tata Letak, & Tema Warna.</p>
 
-      <!-- SETTING FOTO PROFIL VIA LINK -->
       <div class="form-group">
         <label>🖼️ Link URL Foto Profil (Atas Header)</label>
         <input type="text" id="profileUrlInput" placeholder="https://domain.com/foto-anda.jpg" onchange="updateProfilePicture(this.value)">
@@ -216,7 +219,6 @@
 
       <div class="section-divider"></div>
 
-      <!-- KELOLA NAMA & HALAMAN TAB -->
       <div class="form-group">
         <label>📑 Kelola Judul Halaman & Tab</label>
         <div class="tab-manager-list" id="tabManagerList"></div>
@@ -225,7 +227,6 @@
 
       <div class="section-divider"></div>
 
-      <!-- PILIHAN TEMA WARNA -->
       <div class="form-group">
         <label>🎨 Pilihan Tema Warna (30 Jenis)</label>
         <select id="themeSelect" onchange="applyThemeSetting(this.value)">
@@ -262,7 +263,6 @@
         </select>
       </div>
 
-      <!-- TATA LETAK GRID -->
       <div class="form-group">
         <label>📐 Jumlah Kolom Tabel per Baris</label>
         <select id="gridSelect" onchange="applyGridSetting(this.value)">
@@ -280,7 +280,6 @@
   </div>
 
   <script>
-    // KONFIGURASI SUPABASE
     const SUPABASE_URL = "https://pmgpilaxrhdurvdolmoj.supabase.co"; 
     const SUPABASE_ANON_KEY = "sb_publishable_ibfjVja1d0jYvPqDGBb6Yg_XQXFDw7H";
 
@@ -289,10 +288,8 @@
       password: "admin123"
     };
 
-    // CEK STATUS LOGIN PERMANEN DI LOCALSTORAGE
     let isAdminLoggedIn = localStorage.getItem('isAdminLoggedIn') === 'true';
 
-    // DATA DEFAULT DASHBOARD
     const defaultData = {
       activeTab: 0,
       settings: {
@@ -307,18 +304,31 @@
             {
               title: "PIHAK KE 3",
               rows: [
-                "Untuk dana deposit yang di transfer menggunakan Pihak 3 atau nama pemilik yang berbeda tidak dapat terproseskan ya bosku Demi kelancaran transaksi deposit , Mohon pastikan selalu menggunakan Rekening/Ewallet pribadi Anda ya bosku . kami tidak dapat memproses dana deposit yang tidak sesuai dengan data pemilik akun ya bosku\n\nSebagai solusinya :\n-Silakan daftarkan Rekening/Ewallet pengiriman tersebut terlebih dahulu pada situs Nanastoto\n-Ketika sudah berhasil di daftarkan silahkan konfirmasi kepada Live chat kami agar deposit dapat dilakukan proses ya bosku\n\nNote: Kami sarankan untuk kedepannya ketika anda melakukan transfer dana deposit ke rekening bank kami, mohon kerjasamanya untuk tidak memberikan keterangan / catatan apapun pada proses transaksi nya ya bosku",
-                "Isi Baris 2",
-                "Isi Baris 3"
+                {
+                  label: "REK PIHAK 3",
+                  text: "Untuk dana deposit yang di transfer menggunakan Pihak 3 atau nama pemilik yang berbeda tidak dapat terproseskan ya bosku Demi kelancaran transaksi deposit , Mohon pastikan selalu menggunakan Rekening/Ewallet pribadi Anda ya bosku . kami tidak dapat memproses dana deposit yang tidak sesuai dengan data pemilik akun ya bosku\n\nSebagai solusinya :\n-Silakan daftarkan Rekening/Ewallet pengiriman tersebut terlebih dahulu pada situs Nanastoto\n-Ketika sudah berhasil di daftarkan silahkan konfirmasi kepada Live chat kami agar deposit dapat dilakukan proses ya bosku\n\nNote: Kami sarankan untuk kedepannya ketika anda melakukan transfer dana deposit ke rekening bank kami, mohon kerjasamanya untuk tidak memberikan keterangan / catatan apapun pada proses transaksi nya ya bosku"
+                },
+                {
+                  label: "SOLUSI DANA",
+                  text: "Terkait perihal ini, agar deposit anda dapat terproseskan maka :\n-Silahkan anda lakukan pendaftaran akun baru..."
+                }
               ]
             },
             {
               title: "OKEOKE",
-              rows: ["Isi Data A", "Isi Data B", "Isi Data C"]
+              rows: [
+                { label: "INFO A", text: "Isi Data A" },
+                { label: "INFO B", text: "Isi Data B" },
+                { label: "INFO C", text: "Isi Data C" }
+              ]
             },
             {
               title: "WDWFF",
-              rows: ["Proyek Alpha", "Proyek Beta", "Proyek Gamma"]
+              rows: [
+                { label: "KETERANGAN 1", text: "Proyek Alpha" },
+                { label: "KETERANGAN 2", text: "Proyek Beta" },
+                { label: "KETERANGAN 3", text: "Proyek Gamma" }
+              ]
             }
           ]
         },
@@ -332,7 +342,6 @@
 
     let appData = defaultData;
 
-    // DEFINISI 30 TEMA WARNA
     const themes = {
       default: { bg: "#eef2f5", cardBg: "#ffffff", text: "#333333", primary: "#1d61e7", headerCardBg: "#00e5ff", headerCardText: "#000000", border: "#111111" },
       barcelona: { bg: "#0d1b2a", cardBg: "#1b263b", text: "#ffffff", primary: "#e63946", headerCardBg: "#a50044", headerCardText: "#ffed00", border: "#ffed00" },
@@ -366,7 +375,6 @@
       cyberViolet: { bg: "#10002b", cardBg: "#240046", text: "#e0aaff", primary: "#7b2cbf", headerCardBg: "#5a189a", headerCardText: "#ffffff", border: "#9d4edd" }
     };
 
-    // SINKRONISASI DATA MEALUI CLOUD / LOCALSTORAGE
     async function fetchCloudData() {
       const statusEl = document.getElementById('dbStatus');
       try {
@@ -426,7 +434,6 @@
       pushCloudData(appData);
     }
 
-    /* SISTEM LOGIN & LOGOUT PERMANEN */
     function openLoginModal() {
       document.getElementById('loginModal').style.display = 'flex';
       document.getElementById('loginUser').focus();
@@ -485,7 +492,6 @@
       render();
     }
 
-    /* PUSAT PENGATURAN TERPADU */
     function openUnifiedSettingsModal() {
       document.getElementById('profileUrlInput').value = appData.settings.profileUrl || '';
       document.getElementById('themeSelect').value = appData.settings.theme || 'barcelona';
@@ -494,7 +500,6 @@
       document.getElementById('unifiedSettingsModal').style.display = 'flex';
     }
 
-    /* UPDATE FOTO PROFIL */
     function updateProfilePicture(url) {
       appData.settings.profileUrl = url;
       loadProfilePicture(url);
@@ -531,7 +536,6 @@
       saveData();
     }
 
-    /* KELOLA HALAMAN TAB */
     function renderTabManagerList() {
       const container = document.getElementById('tabManagerList');
       container.innerHTML = '';
@@ -605,7 +609,6 @@
       }
     }
 
-    /* RENDER DASHBOARD UTAMA */
     function render() {
       renderTabs();
       renderTables();
@@ -648,22 +651,32 @@
         card.className = 'card-table';
         card.setAttribute('data-title', table.title.toLowerCase());
 
-        let rowsHtml = table.rows.map((rowText, rowIdx) => {
+        let rowsHtml = table.rows.map((row, rowIdx) => {
+          // Kompatibilitas data lama (string) dan data baru (objek)
+          let labelText = typeof row === 'object' ? (row.label || '') : '';
+          let rowContent = typeof row === 'object' ? (row.text || '') : row;
+
           return `
           <tr>
+            <td class="col-label">
+              <div class="label-wrapper">
+                <span class="label-text">${escapeHtml(labelText)}</span>
+                <button class="btn-edit-label" onclick="editRowLabel(${tableIdx}, ${rowIdx})" title="Edit Keterangan">✏️</button>
+              </div>
+            </td>
             <td class="col-num">
               <div class="num-box">
                 <span>${rowIdx + 1}</span>
-                <button class="btn-copy" data-text="${encodeURIComponent(rowText)}" onclick="copyTextFromBtn(this)" title="Salin Teks">
+                <button class="btn-copy" data-text="${encodeURIComponent(rowContent)}" onclick="copyTextFromBtn(this)" title="Salin Teks">
                   <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
                 </button>
               </div>
             </td>
             <td>
               <div class="cell-text-wrapper">
-                <div class="cell-text">${escapeHtml(rowText)}</div>
+                <div class="cell-text">${escapeHtml(rowContent)}</div>
                 <div class="row-actions">
-                  <button class="btn-row-opt" onclick="editRow(${tableIdx}, ${rowIdx})" title="Edit Baris">✏️</button>
+                  <button class="btn-row-opt" onclick="editRowText(${tableIdx}, ${rowIdx})" title="Edit Teks Baris">✏️</button>
                   <button class="btn-row-opt" onclick="deleteRow(${tableIdx}, ${rowIdx})" title="Hapus Baris">🗑️</button>
                 </div>
               </div>
@@ -693,7 +706,6 @@
       });
     }
 
-    /* SALIN TEKS */
     function copyTextFromBtn(button) {
       const text = decodeURIComponent(button.getAttribute('data-text'));
       navigator.clipboard.writeText(text).then(() => {
@@ -707,12 +719,14 @@
       });
     }
 
-    /* MANAGEMENT TABEL & BARIS */
     function addTable() {
       if (!isAdminLoggedIn) return;
       const title = prompt("Masukkan Judul Tabel Baru:");
       if (title) {
-        appData.tabs[appData.activeTab].tables.push({ title: title, rows: ["Isi Baris Baru"] });
+        appData.tabs[appData.activeTab].tables.push({ 
+          title: title, 
+          rows: [{ label: "KETERANGAN", text: "Isi Baris Baru" }] 
+        });
         saveData();
         render();
       }
@@ -740,20 +754,52 @@
 
     function addRow(tableIdx) {
       if (!isAdminLoggedIn) return;
-      const text = prompt("Masukkan Isi Teks Baris Baru:");
+      const label = prompt("Masukkan Teks Keterangan (Kolom Kiri):", "KETERANGAN");
+      if (label === null) return;
+      const text = prompt("Masukkan Isi Teks Utama:");
       if (text !== null) {
-        appData.tabs[appData.activeTab].tables[tableIdx].rows.push(text || "Isi Baru");
+        appData.tabs[appData.activeTab].tables[tableIdx].rows.push({
+          label: label.trim(),
+          text: text
+        });
         saveData();
         render();
       }
     }
 
-    function editRow(tableIdx, rowIdx) {
+    function editRowLabel(tableIdx, rowIdx) {
       if (!isAdminLoggedIn) return;
-      const currentText = appData.tabs[appData.activeTab].tables[tableIdx].rows[rowIdx];
-      const newText = prompt("Edit Isi Baris Teks:", currentText);
+      const row = appData.tabs[appData.activeTab].tables[tableIdx].rows[rowIdx];
+      const currentLabel = typeof row === 'object' ? (row.label || '') : '';
+      const newLabel = prompt("Edit Keterangan (Kolom Kiri):", currentLabel);
+      if (newLabel !== null) {
+        if (typeof row === 'object') {
+          row.label = newLabel;
+        } else {
+          appData.tabs[appData.activeTab].tables[tableIdx].rows[rowIdx] = {
+            label: newLabel,
+            text: row
+          };
+        }
+        saveData();
+        render();
+      }
+    }
+
+    function editRowText(tableIdx, rowIdx) {
+      if (!isAdminLoggedIn) return;
+      const row = appData.tabs[appData.activeTab].tables[tableIdx].rows[rowIdx];
+      const currentText = typeof row === 'object' ? (row.text || '') : row;
+      const newText = prompt("Edit Isi Teks Utama:", currentText);
       if (newText !== null) {
-        appData.tabs[appData.activeTab].tables[tableIdx].rows[rowIdx] = newText;
+        if (typeof row === 'object') {
+          row.text = newText;
+        } else {
+          appData.tabs[appData.activeTab].tables[tableIdx].rows[rowIdx] = {
+            label: '',
+            text: newText
+          };
+        }
         saveData();
         render();
       }
@@ -795,10 +841,10 @@
     }
 
     function escapeHtml(str) {
+      if(!str) return '';
       return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
     }
 
-    // Inisialisasi Aplikasi saat Load Halaman
     updateAdminView();
     fetchCloudData();
   </script>
