@@ -78,7 +78,7 @@
     .tab-btn.active { background-color: #2563eb; color: #fff; border-color: #2563eb; }
     .tab-btn.dashed { border: 1px dashed #94a3b8; background-color: transparent; display: none; }
 
-    /* POPUP MODAL LOGIN */
+    /* POPUP MODAL LOGIN ADMIN */
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 1000; }
     .modal-card { background: #fff; border-radius: 12px; width: 100%; max-width: 360px; padding: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: center; }
     .modal-card h2 { font-size: 18px; margin-bottom: 6px; color: #1d61e7; }
@@ -161,7 +161,7 @@
   </div>
 
   <script>
-    // KREDENSIAL ADMIN DEFAULT
+    // DATA LOGIN ADMIN DEFAULT
     const ADMIN_CREDENTIALS = {
       username: "admin",
       password: "admin123"
@@ -205,7 +205,7 @@
       localStorage.setItem('dashboardData', JSON.stringify(appData));
     }
 
-    /* MODAL LOGIN CONTROLLER */
+    /* SISTEM LOGIN */
     function openLoginModal() {
       document.getElementById('loginModal').style.display = 'flex';
       document.getElementById('loginUser').focus();
@@ -258,7 +258,7 @@
       render();
     }
 
-    /* RENDER CORE */
+    /* RENDER TAMPILAN */
     function render() {
       renderTabs();
       renderTables();
@@ -342,7 +342,7 @@
       });
     }
 
-    /* COPY FUNCTION */
+    /* SALIN TEKS */
     function copyText(text, button) {
       navigator.clipboard.writeText(text).then(() => {
         const originalIcon = button.innerHTML;
@@ -355,7 +355,7 @@
       });
     }
 
-    /* ACTIONS (ADMIN PROTECTED) */
+    /* AKSI ADMIN */
     function addTable() {
       if (!isAdminLoggedIn) return;
       const title = prompt("Masukkan Judul Tabel Baru:");
@@ -455,7 +455,7 @@
       return str.replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/\n/g, '\\n');
     }
 
-    // Inisialisasi awal
+    // Jalankan awal
     updateAdminView();
   </script>
 </body>
