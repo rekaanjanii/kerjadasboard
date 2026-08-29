@@ -63,8 +63,8 @@
     .btn-edit-title { background-color: #f1c40f; color: #000; }
     .btn-delete-card { background-color: #e74c3c; color: #fff; }
 
-    /* CONTENT TABLE */
-    .table-content { width: 100%; border-collapse: collapse; flex-grow: 1; }
+    /* CONTENT TABLE DENGAN UKURAN FIX */
+    .table-content { width: 100%; border-collapse: collapse; flex-grow: 1; table-layout: fixed; }
     .table-content td { border-bottom: 1px solid var(--border-color); border-right: 1px solid var(--border-color); padding: 8px; font-size: 12px; vertical-align: top; }
     .table-content td:last-child { border-right: none; }
     .table-content tr:last-child td { border-bottom: none; }
@@ -73,20 +73,34 @@
     .num-box { display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: 8px; }
     .num-box span { font-weight: 700; }
 
+    /* MODIFIKASI UKURAN TEKS KONSISTEN & SCROLLBAR DAN TIDAK MEMBESARKAN TABEL */
+    .cell-text-wrapper { display: flex; justify-content: space-between; gap: 8px; align-items: flex-start; }
+    .cell-text { 
+      flex-grow: 1; 
+      white-space: pre-line; 
+      word-break: break-word; 
+      max-height: 75px; 
+      overflow-y: auto; 
+      padding-right: 4px;
+    }
+
+    /* KUSTOMISASI SCROLLBAR PADA TEKS */
+    .cell-text::-webkit-scrollbar { width: 4px; }
+    .cell-text::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); border-radius: 4px; }
+    .cell-text::-webkit-scrollbar-thumb { background: var(--primary-color); border-radius: 4px; }
+
     /* TOMBOL COPY & ROW ACTION */
-    .btn-copy { background-color: #fff; border: 1.5px solid #e74c3c; border-radius: 4px; width: 26px; height: 26px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; }
+    .btn-copy { background-color: #fff; border: 1.5px solid #e74c3c; border-radius: 4px; width: 26px; height: 26px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; flex-shrink: 0; }
     .btn-copy svg { fill: none; stroke: #e74c3c; stroke-width: 2; width: 14px; height: 14px; }
     .btn-copy.copied { background-color: #2ecc71; border-color: #2ecc71; }
     .btn-copy.copied svg { stroke: #fff; }
 
-    .cell-text-wrapper { display: flex; justify-content: space-between; gap: 8px; }
-    .cell-text { flex-grow: 1; white-space: pre-line; word-break: break-word; }
-    .row-actions { display: none; flex-direction: column; gap: 4px; }
+    .row-actions { display: none; flex-direction: column; gap: 4px; flex-shrink: 0; }
     .admin-mode .row-actions { display: flex; }
     .btn-row-opt { border: none; background: transparent; cursor: pointer; font-size: 11px; }
 
     /* CARD FOOTER */
-    .card-footer { border-top: 1px solid var(--border-color); padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; background-color: var(--card-bg); font-size: 11px; font-weight: 700; }
+    .card-footer { border-top: 1px solid var(--border-color); padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; background-color: var(--card-bg); font-size: 11px; font-weight: 700; margin-top: auto; }
     .btn-tambah-kolom { color: var(--primary-color); cursor: pointer; user-select: none; display: none; }
     .admin-mode .btn-tambah-kolom { display: inline; }
 
@@ -125,7 +139,7 @@
     <!-- HEADER -->
     <div class="header">
       <div class="header-left">
-        <!-- FOTO PROFIL (Bisa Diatur via Link Gambar) -->
+        <!-- FOTO PROFIL HEADER -->
         <img id="profileImage" class="profile-avatar" src="https://via.placeholder.com/150" alt="Foto Profil" onerror="this.src='https://via.placeholder.com/150'">
         <div class="header-title">
           <h1>DASHBOARD KERJA</h1>
@@ -188,13 +202,13 @@
     </div>
   </div>
 
-  <!-- MODAL UNIFIED SETTINGS (PUSAT PENGATURAN TERPADU) -->
+  <!-- MODAL UNIFIED SETTINGS -->
   <div class="modal-overlay" id="unifiedSettingsModal">
     <div class="modal-card">
       <h2>⚙️ Pusat Pengaturan Dashboard</h2>
       <p>Atur Foto Profil, Judul Halaman, Susunan Tab, Tata Letak, & Tema Warna.</p>
 
-      <!-- BAGIAN 0: SETTING FOTO PROFIL VIA LINK -->
+      <!-- SETTING FOTO PROFIL VIA LINK -->
       <div class="form-group">
         <label>🖼️ Link URL Foto Profil (Atas Header)</label>
         <input type="text" id="profileUrlInput" placeholder="https://domain.com/foto-anda.jpg" onchange="updateProfilePicture(this.value)">
@@ -202,7 +216,7 @@
 
       <div class="section-divider"></div>
 
-      <!-- BAGIAN 1: KELOLA NAMA & HALAMAN TAB -->
+      <!-- KELOLA NAMA & HALAMAN TAB -->
       <div class="form-group">
         <label>📑 Kelola Judul Halaman & Tab</label>
         <div class="tab-manager-list" id="tabManagerList"></div>
@@ -211,7 +225,7 @@
 
       <div class="section-divider"></div>
 
-      <!-- BAGIAN 2: PILIHAN TEMA WARNA (30 TEMA) -->
+      <!-- PILIHAN TEMA WARNA -->
       <div class="form-group">
         <label>🎨 Pilihan Tema Warna (30 Jenis)</label>
         <select id="themeSelect" onchange="applyThemeSetting(this.value)">
@@ -248,7 +262,7 @@
         </select>
       </div>
 
-      <!-- BAGIAN 3: TATA LETAK GRID -->
+      <!-- TATA LETAK GRID -->
       <div class="form-group">
         <label>📐 Jumlah Kolom Tabel per Baris</label>
         <select id="gridSelect" onchange="applyGridSetting(this.value)">
@@ -275,7 +289,7 @@
       password: "admin123"
     };
 
-    // CEK STATUS LOGIN PERMANEN DI LOCALSTORAGE (SISTEM ANTI AUTO LOGOUT)
+    // CEK STATUS LOGIN PERMANEN DI LOCALSTORAGE
     let isAdminLoggedIn = localStorage.getItem('isAdminLoggedIn') === 'true';
 
     // DATA DEFAULT DASHBOARD
@@ -288,12 +302,12 @@
       },
       tabs: [
         {
-          name: "JUDUL DASBORD 1",
+          name: "DEPOSIT",
           tables: [
             {
-              title: "AKUN TEST",
+              title: "PIHAK KE 3",
               rows: [
-                "Baik bosku,Kami ingin menginformasikan bahwa untuk data yang anda berikan saat ini sedang dalam tahap proses verifikasi. Jika data yang anda berikan sudah sesuai maka untuk bonus event tersebut akan langsung bertambah pada saldo akun anda. Kami sangat menyarankan anda untuk mengecek saldo akun anda secara berkala ya bosku",
+                "Untuk dana deposit yang di transfer menggunakan Pihak 3 atau nama pemilik yang berbeda tidak dapat terproseskan ya bosku Demi kelancaran transaksi deposit , Mohon pastikan selalu menggunakan Rekening/Ewallet pribadi Anda ya bosku . kami tidak dapat memproses dana deposit yang tidak sesuai dengan data pemilik akun ya bosku\n\nSebagai solusinya :\n-Silakan daftarkan Rekening/Ewallet pengiriman tersebut terlebih dahulu pada situs Nanastoto\n-Ketika sudah berhasil di daftarkan silahkan konfirmasi kepada Live chat kami agar deposit dapat dilakukan proses ya bosku\n\nNote: Kami sarankan untuk kedepannya ketika anda melakukan transfer dana deposit ke rekening bank kami, mohon kerjasamanya untuk tidak memberikan keterangan / catatan apapun pada proses transaksi nya ya bosku",
                 "Isi Baris 2",
                 "Isi Baris 3"
               ]
@@ -308,9 +322,11 @@
             }
           ]
         },
-        { name: "JUDUL DASBORD 2", tables: [] },
-        { name: "JUDUL DASBORD 3", tables: [] },
-        { name: "tes2", tables: [] }
+        { name: "WD", tables: [] },
+        { name: "QRIS", tables: [] },
+        { name: "TOGEL", tables: [] },
+        { name: "ALL PERMAINAN", tables: [] },
+        { name: "MEMO PL", tables: [] }
       ]
     };
 
@@ -381,7 +397,6 @@
         statusEl.classList.add('offline');
       }
       
-      // Terapkan Pengaturan Terimpan
       applyThemeSetting(appData.settings.theme || 'barcelona');
       applyGridSetting(appData.settings.gridCols || 'repeat(3, 1fr)');
       loadProfilePicture(appData.settings.profileUrl);
@@ -411,7 +426,7 @@
       pushCloudData(appData);
     }
 
-    /* SISTEM LOGIN & LOGOUT PERMANEN (PERSISTENT) */
+    /* SISTEM LOGIN & LOGOUT PERMANEN */
     function openLoginModal() {
       document.getElementById('loginModal').style.display = 'flex';
       document.getElementById('loginUser').focus();
@@ -433,7 +448,7 @@
 
       if (user === ADMIN_CREDENTIALS.username && pass === ADMIN_CREDENTIALS.password) {
         isAdminLoggedIn = true;
-        localStorage.setItem('isAdminLoggedIn', 'true'); // SIMPAN STATUS LOGIN PADA BROWSER
+        localStorage.setItem('isAdminLoggedIn', 'true');
         closeModal('loginModal');
         updateAdminView();
       } else {
@@ -444,7 +459,7 @@
     function logoutAdmin() {
       if (confirm("Apakah Anda yakin ingin Logout dari Mode Admin?")) {
         isAdminLoggedIn = false;
-        localStorage.removeItem('isAdminLoggedIn'); // HAPUS STATUS LOGIN DARI BROWSER
+        localStorage.removeItem('isAdminLoggedIn');
         updateAdminView();
       }
     }
@@ -516,7 +531,7 @@
       saveData();
     }
 
-    /* EDIT & KELOLA HALAMAN TAB */
+    /* KELOLA HALAMAN TAB */
     function renderTabManagerList() {
       const container = document.getElementById('tabManagerList');
       container.innerHTML = '';
@@ -590,7 +605,7 @@
       }
     }
 
-    /* RENDER DASHBOARD TAMPILAN UTAMA */
+    /* RENDER DASHBOARD UTAMA */
     function render() {
       renderTabs();
       renderTables();
