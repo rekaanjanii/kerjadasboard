@@ -18,7 +18,7 @@
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
     body { background-color: var(--bg-color); padding: 20px; color: var(--text-color); transition: background-color 0.3s; }
-    .container { max-width: 1300px; margin: 0 auto; background-color: var(--card-bg); border-radius: 12px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+    .container { max-width: 1400px; margin: 0 auto; background-color: var(--card-bg); border-radius: 12px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
 
     /* HEADER */
     .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
@@ -44,8 +44,7 @@
     .admin-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
     .btn-panel { border: none; padding: 8px 14px; border-radius: 6px; color: #fff; font-size: 12px; font-weight: 700; cursor: pointer; }
     .btn-tambah { background-color: #00a86b; }
-    .btn-kelola { background-color: #5856d6; }
-    .btn-tema { background-color: #af52de; }
+    .btn-setting { background-color: #5856d6; }
     .btn-setup { background-color: #e67e22; }
 
     /* GRID TABLE */
@@ -92,13 +91,13 @@
     .tab-btn.active { background-color: var(--primary-color); color: #fff; border-color: var(--primary-color); }
     .tab-btn.dashed { border: 1px dashed #94a3b8; background-color: transparent; display: none; }
 
-    /* POPUP MODAL GENERATOR */
-    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 1000; }
-    .modal-card { background: #fff; border-radius: 12px; width: 100%; max-width: 480px; padding: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: left; color: #333; max-height: 90vh; overflow-y: auto; }
+    /* POPUP MODAL UNIFIED SETTINGS */
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 1000; }
+    .modal-card { background: #fff; border-radius: 12px; width: 100%; max-width: 520px; padding: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: left; color: #333; max-height: 90vh; overflow-y: auto; }
     .modal-card h2 { font-size: 18px; margin-bottom: 6px; color: var(--primary-color); text-align: center; }
     .modal-card p { font-size: 12px; color: #666; margin-bottom: 20px; text-align: center; }
-    .form-group { margin-bottom: 14px; }
-    .form-group label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 4px; color: #444; }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 6px; color: #444; }
     .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; outline: none; }
     .modal-btns { display: flex; gap: 10px; margin-top: 20px; }
     .btn-modal { flex: 1; padding: 10px; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 13px; text-align: center; }
@@ -107,11 +106,12 @@
     .login-error { color: #e74c3c; font-size: 11px; margin-top: 8px; display: none; text-align: center; }
 
     /* TAB MANAGER LIST */
-    .tab-manager-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px; }
-    .tab-manager-item { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 8px 12px; border-radius: 6px; border: 1px solid #e2e8f0; }
-    .tab-manager-item span { font-size: 13px; font-weight: 600; }
+    .tab-manager-list { display: flex; flex-direction: column; gap: 8px; max-height: 200px; overflow-y: auto; padding-right: 4px; border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px; background: #fafafa; }
+    .tab-manager-item { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 8px 10px; border-radius: 6px; border: 1px solid #e2e8f0; }
+    .tab-manager-item span { font-size: 12px; font-weight: 700; flex-grow: 1; }
     .tab-item-actions { display: flex; gap: 4px; }
     .btn-sm { padding: 4px 8px; font-size: 11px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
+    .section-divider { border-bottom: 1.5px dashed #e2e8f0; margin: 18px 0; }
   </style>
 </head>
 <body>
@@ -144,8 +144,7 @@
       <div class="admin-panel-title">⚙️ PANEL ADMIN DASHBOARD</div>
       <div class="admin-buttons">
         <button class="btn-panel btn-tambah" onclick="addTable()">+ Tambah Tabel</button>
-        <button class="btn-panel btn-kelola" onclick="openPageManagerModal()">📁 Kelola Halaman</button>
-        <button class="btn-panel btn-tema" onclick="openThemeModal()">🎨 Tampilan & Tema</button>
+        <button class="btn-panel btn-setting" onclick="openUnifiedSettingsModal()">⚙️ Pusat Pengaturan (Tema & Halaman)</button>
         <button class="btn-panel btn-setup" onclick="resetData()">🔄 Reset Data</button>
       </div>
     </div>
@@ -159,7 +158,7 @@
 
   <!-- MODAL LOGIN ADMIN -->
   <div class="modal-overlay" id="loginModal">
-    <div class="modal-card">
+    <div class="modal-card" style="max-width:380px;">
       <h2>Login Admin Mode</h2>
       <p>Masukkan username & password untuk akses pengeditan</p>
       <form onsubmit="handleLogin(event)">
@@ -180,45 +179,72 @@
     </div>
   </div>
 
-  <!-- MODAL KELOLA HALAMAN (PAGE MANAGER) -->
-  <div class="modal-overlay" id="pageManagerModal">
+  <!-- MODAL UNIFIED SETTINGS (PUSAT PENGATURAN TERPADU) -->
+  <div class="modal-overlay" id="unifiedSettingsModal">
     <div class="modal-card">
-      <h2>Kelola Halaman Dashboard</h2>
-      <p>Atur nama, urutan, atau hapus halaman dashboard</p>
-      <div class="tab-manager-list" id="tabManagerList"></div>
-      <div class="modal-btns">
-        <button type="button" class="btn-modal btn-modal-submit" onclick="addPage()">+ Tambah Halaman Baru</button>
-        <button type="button" class="btn-modal btn-modal-cancel" onclick="closeModal('pageManagerModal')">Tutup</button>
-      </div>
-    </div>
-  </div>
+      <h2>⚙️ Pusat Pengaturan Dashboard</h2>
+      <p>Atur judul halaman, susunan tab, tata letak grid, dan 30 pilihan tema warna.</p>
 
-  <!-- MODAL TEMA & TAMPILAN -->
-  <div class="modal-overlay" id="themeModal">
-    <div class="modal-card">
-      <h2>Pengaturan Tampilan & Tema</h2>
-      <p>Sesuaikan tata letak dan skema warna dashboard</p>
+      <!-- BAGIAN 1: KELOLA NAMA & HALAMAN TAB -->
       <div class="form-group">
-        <label>Skema Warna / Tema</label>
+        <label>📑 Kelola Judul Halaman & Tab</label>
+        <div class="tab-manager-list" id="tabManagerList"></div>
+        <button type="button" class="btn-panel btn-tambah" style="width:100%; margin-top:8px;" onclick="addPage()">+ Tambah Halaman Baru</button>
+      </div>
+
+      <div class="section-divider"></div>
+
+      <!-- BAGIAN 2: PILIHAN TEMA WARNA (30 TEMA) -->
+      <div class="form-group">
+        <label>🎨 Pilihan Tema Warna (30 Jenis)</label>
         <select id="themeSelect" onchange="applyThemeSetting(this.value)">
-          <option value="default">Default Blue (Biru Cerah)</option>
-          <option value="dark">Dark Modern (Gelap)</option>
-          <option value="barcelona">Barcelona Crimson (Merah / Biru)</option>
-          <option value="emerald">Emerald Fresh (Hijau Segar)</option>
-          <option value="gold">Luxury Gold (Emas Mewah)</option>
-          <option value="purple">Sunset Purple (Ungu Modern)</option>
+          <!-- 30 Tema Lengkap Variatif -->
+          <option value="default">1. Default Blue (Biru Standard)</option>
+          <option value="barcelona">2. FC Barcelona (Crimson & Navy)</option>
+          <option value="dark">3. Dark Modern (Hitam Elegan)</option>
+          <option value="emerald">4. Emerald Green (Hijau Segar)</option>
+          <option value="gold">5. Luxury Gold (Emas Gelap)</option>
+          <option value="purple">6. Sunset Purple (Ungu Modern)</option>
+          <option value="cyberpunk">7. Cyberpunk Neon (Kuning & Biru Neon)</option>
+          <option value="ocean">8. Deep Ocean (Biru Laut)</option>
+          <option value="crimson">9. Crimson Blood (Merah Pekat)</option>
+          <option value="nord">10. Nord Ice (Biru Es Nordik)</option>
+          <option value="vaporwave">11. Vaporwave (Pink & Cyan)</option>
+          <option value="dracula">12. Dracula Dark (Vampir Ungu Dark)</option>
+          <option value="coffee">13. Warm Coffee (Cokelat Hangat)</option>
+          <option value="forest">14. Deep Forest (Hijau Hutan Pekat)</option>
+          <option value="midnight">15. Midnight Blue (Biru Gelap Malam)</option>
+          <option value="pastelPink">16. Soft Pastel Pink (Merah Muda Soft)</option>
+          <option value="orangeJuice">17. Fresh Orange (Oranye Cerah)</option>
+          <option value="slate">18. Slate Grey (Abu-abu Profesional)</option>
+          <option value="mint">19. Fresh Mint (Hijau Mint Cyan)</option>
+          <option value="royal">20. Royal Velvet (Ungu Kerajaan)</option>
+          <option value="bumblebee">21. Bumblebee (Kuning Hitam)</option>
+          <option value="matrix">22. Matrix Code (Hitam Hijau Neon)</option>
+          <option value="retrowave">23. Retrowave (Magenta & Dark Indigo)</option>
+          <option value="coral">24. Coral Sunset (Merah Jingga Koral)</option>
+          <option value="turquoise">25. Turquoise Gem (Toska Mewah)</option>
+          <option value="lavender">26. Lavender Soft (Ungu Lavender)</option>
+          <option value="monochrome">27. Monochrome Dark (Hitam Putih Netral)</option>
+          <option value="tokyo">28. Tokyo Night (Biru Neon & Magenta)</option>
+          <option value="autumn">29. Autumn Fall (Cokelat Oranye Gugur)</option>
+          <option value="cyberViolet">30. Cyber Violet (Ungu Neon Dark)</option>
         </select>
       </div>
+
+      <!-- BAGIAN 3: TATA LETAK GRID -->
       <div class="form-group">
-        <label>Jumlah Kolom Grid</label>
+        <label>📐 Jumlah Kolom Tabel per Baris</label>
         <select id="gridSelect" onchange="applyGridSetting(this.value)">
           <option value="repeat(2, 1fr)">2 Kolom</option>
           <option value="repeat(3, 1fr)">3 Kolom (Default)</option>
           <option value="repeat(4, 1fr)">4 Kolom</option>
+          <option value="repeat(5, 1fr)">5 Kolom (Layar Lebar)</option>
         </select>
       </div>
+
       <div class="modal-btns">
-        <button type="button" class="btn-modal btn-modal-submit" onclick="closeModal('themeModal')">Selesai</button>
+        <button type="button" class="btn-modal btn-modal-submit" onclick="closeModal('unifiedSettingsModal')">Selesai & Simpan</button>
       </div>
     </div>
   </div>
@@ -239,7 +265,7 @@
     const defaultData = {
       activeTab: 0,
       settings: {
-        theme: 'default',
+        theme: 'barcelona',
         gridCols: 'repeat(3, 1fr)'
       },
       tabs: [
@@ -255,33 +281,58 @@
               ]
             },
             {
-              title: "AKUN TEST 2",
+              title: "OKEOKE",
               rows: ["Isi Data A", "Isi Data B", "Isi Data C"]
             },
             {
-              title: "JUDUL 3",
+              title: "WDWFF",
               rows: ["Proyek Alpha", "Proyek Beta", "Proyek Gamma"]
             }
           ]
         },
         { name: "JUDUL DASBORD 2", tables: [] },
-        { name: "JUDUL DASBORD 3", tables: [] }
+        { name: "JUDUL DASBORD 3", tables: [] },
+        { name: "tes2", tables: [] }
       ]
     };
 
     let appData = defaultData;
 
-    // TEMA WARNA
+    // DEFINISI 30 TEMA WARNA
     const themes = {
       default: { bg: "#eef2f5", cardBg: "#ffffff", text: "#333333", primary: "#1d61e7", headerCardBg: "#00e5ff", headerCardText: "#000000", border: "#111111" },
+      barcelona: { bg: "#0d1b2a", cardBg: "#1b263b", text: "#ffffff", primary: "#e63946", headerCardBg: "#a50044", headerCardText: "#ffed00", border: "#ffed00" },
       dark: { bg: "#121212", cardBg: "#1e1e1e", text: "#e0e0e0", primary: "#bb86fc", headerCardBg: "#2d2d2d", headerCardText: "#ffffff", border: "#333333" },
-      barcelona: { bg: "#0a1128", cardBg: "#1c2541", text: "#ffffff", primary: "#ed1c24", headerCardBg: "#a50044", headerCardText: "#ffed00", border: "#004d98" },
       emerald: { bg: "#e8f5e9", cardBg: "#ffffff", text: "#1b5e20", primary: "#2e7d32", headerCardBg: "#a5d6a7", headerCardText: "#0d5302", border: "#1b5e20" },
       gold: { bg: "#1a1a1a", cardBg: "#262626", text: "#f5f5f5", primary: "#d4af37", headerCardBg: "#d4af37", headerCardText: "#000000", border: "#d4af37" },
-      purple: { bg: "#f3e5f5", cardBg: "#ffffff", text: "#4a148c", primary: "#8e24aa", headerCardBg: "#ce93d8", headerCardText: "#3b0066", border: "#4a148c" }
+      purple: { bg: "#f3e5f5", cardBg: "#ffffff", text: "#4a148c", primary: "#8e24aa", headerCardBg: "#ce93d8", headerCardText: "#3b0066", border: "#4a148c" },
+      cyberpunk: { bg: "#050505", cardBg: "#121212", text: "#00ffcc", primary: "#ffe600", headerCardBg: "#ffe600", headerCardText: "#000000", border: "#00ffcc" },
+      ocean: { bg: "#0f172a", cardBg: "#1e293b", text: "#f8fafc", primary: "#38bdf8", headerCardBg: "#0284c7", headerCardText: "#ffffff", border: "#38bdf8" },
+      crimson: { bg: "#1a0505", cardBg: "#2b0a0a", text: "#fecdd3", primary: "#e11d48", headerCardBg: "#9f1239", headerCardText: "#ffffff", border: "#e11d48" },
+      nord: { bg: "#2e3440", cardBg: "#3b4252", text: "#eceff4", primary: "#88c0d0", headerCardBg: "#81a1c1", headerCardText: "#2e3440", border: "#88c0d0" },
+      vaporwave: { bg: "#180228", cardBg: "#280545", text: "#ff77ff", primary: "#00ffff", headerCardBg: "#ff007f", headerCardText: "#ffffff", border: "#00ffff" },
+      dracula: { bg: "#282a36", cardBg: "#44475a", text: "#f8f8f2", primary: "#ff79c6", headerCardBg: "#bd93f9", headerCardText: "#282a36", border: "#ff79c6" },
+      coffee: { bg: "#221811", cardBg: "#36271c", text: "#e6ccb2", primary: "#ddb892", headerCardBg: "#7f5539", headerCardText: "#ffffff", border: "#ddb892" },
+      forest: { bg: "#0b1d13", cardBg: "#132a1c", text: "#ecfdf5", primary: "#10b981", headerCardBg: "#047857", headerCardText: "#ffffff", border: "#10b981" },
+      midnight: { bg: "#090d16", cardBg: "#111827", text: "#f3f4f6", primary: "#6366f1", headerCardBg: "#4338ca", headerCardText: "#ffffff", border: "#6366f1" },
+      pastelPink: { bg: "#fdf2f8", cardBg: "#ffffff", text: "#831843", primary: "#ec4899", headerCardBg: "#fbcfe8", headerCardText: "#831843", border: "#f472b6" },
+      orangeJuice: { bg: "#fff7ed", cardBg: "#ffffff", text: "#7c2d12", primary: "#f97316", headerCardBg: "#ffedd5", headerCardText: "#9a3412", border: "#fb923c" },
+      slate: { bg: "#0f172a", cardBg: "#1e293b", text: "#e2e8f0", primary: "#94a3b8", headerCardBg: "#475569", headerCardText: "#ffffff", border: "#64748b" },
+      mint: { bg: "#f0fdf4", cardBg: "#ffffff", text: "#14532d", primary: "#14b8a6", headerCardBg: "#ccfbf1", headerCardText: "#115e59", border: "#2dd4bf" },
+      royal: { bg: "#13091f", cardBg: "#22123b", text: "#f3e8ff", primary: "#a855f7", headerCardBg: "#7e22ce", headerCardText: "#ffffff", border: "#a855f7" },
+      bumblebee: { bg: "#000000", cardBg: "#1a1a1a", text: "#ffffff", primary: "#eab308", headerCardBg: "#eab308", headerCardText: "#000000", border: "#eab308" },
+      matrix: { bg: "#000f00", cardBg: "#001a00", text: "#00ff00", primary: "#00ff00", headerCardBg: "#003300", headerCardText: "#00ff00", border: "#00ff00" },
+      retrowave: { bg: "#1a0022", cardBg: "#2d003b", text: "#ff66cc", primary: "#33ffff", headerCardBg: "#ff0066", headerCardText: "#ffffff", border: "#33ffff" },
+      coral: { bg: "#fff1f2", cardBg: "#ffffff", text: "#881337", primary: "#f43f5e", headerCardBg: "#ffe4e6", headerCardText: "#9f1239", border: "#fb7185" },
+      turquoise: { bg: "#042f2e", cardBg: "#0d4744", text: "#ccfbf1", primary: "#2dd4bf", headerCardBg: "#115e59", headerCardText: "#ffffff", border: "#2dd4bf" },
+      lavender: { bg: "#faf5ff", cardBg: "#ffffff", text: "#581c87", primary: "#c084fc", headerCardBg: "#f3e8ff", headerCardText: "#6b21a8", border: "#c084fc" },
+      monochrome: { bg: "#18181b", cardBg: "#27272a", text: "#f4f4f5", primary: "#ffffff", headerCardBg: "#3f3f46", headerCardText: "#ffffff", border: "#52525b" },
+      tokyo: { bg: "#1a1b26", cardBg: "#24283b", text: "#a9b1d6", primary: "#7aa2f7", headerCardBg: "#f7768e", headerCardText: "#1a1b26", border: "#7aa2f7" },
+      autumn: { bg: "#1c100b", cardBg: "#2e1c14", text: "#ffedd5", primary: "#ea580c", headerCardBg: "#9a3412", headerCardText: "#ffffff", border: "#ea580c" },
+      cyberViolet: { bg: "#10002b", cardBg: "#240046", text: "#e0aaff", primary: "#7b2cbf", headerCardBg: "#5a189a", headerCardText: "#ffffff", border: "#9d4edd" }
     };
 
-    // SINKRONISASI SUPABASE
+    // SINKRONISASI DATA MEALUI CLOUD / LOCALSTORAGE
     async function fetchCloudData() {
       const statusEl = document.getElementById('dbStatus');
       try {
@@ -311,7 +362,7 @@
         statusEl.innerText = "⚠ Mode Lokal / Offline";
         statusEl.classList.add('offline');
       }
-      applyThemeSetting(appData.settings.theme || 'default');
+      applyThemeSetting(appData.settings.theme || 'barcelona');
       applyGridSetting(appData.settings.gridCols || 'repeat(3, 1fr)');
       render();
     }
@@ -339,7 +390,7 @@
       pushCloudData(appData);
     }
 
-    /* SISTEM LOGIN ADMIN */
+    /* LOGIN ADMIN */
     function openLoginModal() {
       document.getElementById('loginModal').style.display = 'flex';
       document.getElementById('loginUser').focus();
@@ -394,11 +445,12 @@
       render();
     }
 
-    /* SISTEM TEMA & LAYOUT */
-    function openThemeModal() {
-      document.getElementById('themeSelect').value = appData.settings.theme || 'default';
+    /* PUSAT PENGATURAN TERPADU (UNIFIED SETTINGS) */
+    function openUnifiedSettingsModal() {
+      document.getElementById('themeSelect').value = appData.settings.theme || 'barcelona';
       document.getElementById('gridSelect').value = appData.settings.gridCols || 'repeat(3, 1fr)';
-      document.getElementById('themeModal').style.display = 'flex';
+      renderTabManagerList();
+      document.getElementById('unifiedSettingsModal').style.display = 'flex';
     }
 
     function applyThemeSetting(themeKey) {
@@ -422,13 +474,8 @@
       saveData();
     }
 
-    /* KELOLA HALAMAN (TAB MANAGER) */
-    function openPageManagerModal() {
-      renderPageManagerList();
-      document.getElementById('pageManagerModal').style.display = 'flex';
-    }
-
-    function renderPageManagerList() {
+    /* EDIT & KELOLA NAMA TAB/HALAMAN */
+    function renderTabManagerList() {
       const container = document.getElementById('tabManagerList');
       container.innerHTML = '';
 
@@ -436,12 +483,12 @@
         const item = document.createElement('div');
         item.className = 'tab-manager-item';
         item.innerHTML = `
-          <span>${idx + 1}. ${tab.name}</span>
+          <span>${idx + 1}. ${escapeHtml(tab.name)}</span>
           <div class="tab-item-actions">
-            <button class="btn-sm btn-edit-title" onclick="renamePage(${idx})" title="Rename">✏️</button>
+            <button class="btn-sm btn-edit-title" onclick="renamePage(${idx})" title="Edit Judul Halaman">✏️ Edit</button>
             <button class="btn-sm btn-tambah" onclick="movePage(${idx}, -1)" ${idx === 0 ? 'disabled' : ''} title="Naik">⬆️</button>
             <button class="btn-sm btn-tambah" onclick="movePage(${idx}, 1)" ${idx === appData.tabs.length - 1 ? 'disabled' : ''} title="Turun">⬇️</button>
-            <button class="btn-sm btn-delete-card" onclick="deletePage(${idx})" ${appData.tabs.length <= 1 ? 'disabled' : ''} title="Hapus">🗑️</button>
+            <button class="btn-sm btn-delete-card" onclick="deletePage(${idx})" ${appData.tabs.length <= 1 ? 'disabled' : ''} title="Hapus Halaman">🗑️</button>
           </div>
         `;
         container.appendChild(item);
@@ -449,12 +496,12 @@
     }
 
     function renamePage(index) {
-      const newName = prompt("Masukkan nama baru untuk halaman ini:", appData.tabs[index].name);
-      if (newName) {
-        appData.tabs[index].name = newName;
+      const newName = prompt("Edit Judul Halaman / Tab:", appData.tabs[index].name);
+      if (newName !== null && newName.trim() !== "") {
+        appData.tabs[index].name = newName.trim();
         saveData();
         render();
-        renderPageManagerList();
+        renderTabManagerList();
       }
     }
 
@@ -470,7 +517,7 @@
 
       saveData();
       render();
-      renderPageManagerList();
+      renderTabManagerList();
     }
 
     function deletePage(index) {
@@ -485,7 +532,7 @@
         }
         saveData();
         render();
-        renderPageManagerList();
+        renderTabManagerList();
       }
     }
 
@@ -497,13 +544,11 @@
         appData.activeTab = appData.tabs.length - 1;
         saveData();
         render();
-        if(document.getElementById('pageManagerModal').style.display === 'flex') {
-          renderPageManagerList();
-        }
+        renderTabManagerList();
       }
     }
 
-    /* RENDER TAMPILAN DASHBOARD */
+    /* RENDER DASHBOARD TAMPILAN UTAMA */
     function render() {
       renderTabs();
       renderTables();
@@ -591,7 +636,7 @@
       });
     }
 
-    /* SALIN TEKS AMAN */
+    /* SALIN TEKS */
     function copyTextFromBtn(button) {
       const text = decodeURIComponent(button.getAttribute('data-text'));
       navigator.clipboard.writeText(text).then(() => {
@@ -605,7 +650,7 @@
       });
     }
 
-    /* AKSI TABEL & BARIS */
+    /* AKSI MANAGEMENT TABEL & BARIS */
     function addTable() {
       if (!isAdminLoggedIn) return;
       const title = prompt("Masukkan Judul Tabel Baru:");
@@ -685,7 +730,7 @@
       if (confirm("Reset seluruh data kembali ke tampilan awal?")) {
         appData = JSON.parse(JSON.stringify(defaultData));
         saveData();
-        applyThemeSetting('default');
+        applyThemeSetting('barcelona');
         applyGridSetting('repeat(3, 1fr)');
         render();
       }
@@ -695,7 +740,7 @@
       return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
     }
 
-    // Inisialisasi awal
+    // Inisialisasi Aplikasi
     updateAdminView();
     fetchCloudData();
   </script>
