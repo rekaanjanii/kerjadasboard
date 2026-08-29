@@ -51,6 +51,14 @@
     .btn-setting { background-color: #5856d6; }
     .btn-setup { background-color: #e67e22; }
 
+    /* NAVIGATION TABS (POSISI DIPINDAH KE ATAS) */
+    .nav-tabs { display: flex; gap: 8px; padding-bottom: 15px; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); overflow-x: auto; flex-wrap: wrap; }
+    .tab-btn { padding: 8px 16px; border-radius: 6px; font-size: 12px; font-weight: 700; border: 1px solid rgba(255,255,255,0.2); background-color: rgba(255,255,255,0.05); color: #ccc; cursor: pointer; white-space: nowrap; transition: 0.2s; }
+    .tab-btn.active { background-color: var(--primary-color); color: #fff; border-color: var(--primary-color); box-shadow: 0 2px 6px rgba(0,0,0,0.3); }
+    .tab-btn.tab-all { background-color: #f39c12; color: #fff; border-color: #f39c12; }
+    .tab-btn.tab-all.active { background-color: #e67e22; border-color: #e67e22; }
+    .tab-btn.dashed { border: 1px dashed #94a3b8; background-color: transparent; display: none; }
+
     /* GRID TABLE */
     .grid-cards { display: grid; grid-template-columns: var(--grid-cols); gap: 16px; margin-bottom: 25px; transition: all 0.3s ease; }
     
@@ -121,12 +129,6 @@
     .btn-tambah-kolom { color: var(--primary-color); cursor: pointer; user-select: none; display: none; }
     .admin-mode .btn-tambah-kolom { display: inline; }
 
-    /* FOOTER TABS */
-    .footer-tabs { display: flex; gap: 10px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; overflow-x: auto; }
-    .tab-btn { padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 700; border: 1px solid rgba(255,255,255,0.2); background-color: rgba(255,255,255,0.05); color: #ccc; cursor: pointer; white-space: nowrap; }
-    .tab-btn.active { background-color: var(--primary-color); color: #fff; border-color: var(--primary-color); }
-    .tab-btn.dashed { border: 1px dashed #94a3b8; background-color: transparent; display: none; }
-
     /* POPUP MODAL */
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 1000; }
     .modal-card { background: #fff; border-radius: 12px; width: 100%; max-width: 520px; padding: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); text-align: left; color: #333; max-height: 90vh; overflow-y: auto; }
@@ -188,11 +190,11 @@
       </div>
     </div>
 
+    <!-- NAVIGATION TABS (DI POSISI ATAS KINI) -->
+    <div class="nav-tabs" id="navTabs"></div>
+
     <!-- GRID CARD TABLES -->
     <div class="grid-cards" id="gridCards"></div>
-
-    <!-- FOOTER TABS -->
-    <div class="footer-tabs" id="footerTabs"></div>
   </div>
 
   <!-- MODAL LOGIN ADMIN -->
@@ -303,7 +305,7 @@
     let isAdminLoggedIn = localStorage.getItem('isAdminLoggedIn') === 'true';
 
     const defaultData = {
-      activeTab: 0,
+      activeTab: 0, // 'all' atau index number
       settings: {
         theme: 'barcelona',
         gridCols: 'repeat(3, 1fr)',
@@ -627,9 +629,21 @@
     }
 
     function renderTabs() {
-      const tabsContainer = document.getElementById('footerTabs');
+      const tabsContainer = document.getElementById('navTabs');
       tabsContainer.innerHTML = '';
 
+      // TAB 'ALL' (Paling Depan)
+      const btnAll = document.createElement('button');
+      btnAll.className = `tab-btn tab-all ${appData.activeTab === 'all' ? 'active' : ''}`;
+      btnAll.innerText = '🌐 ALL (SEMUA)';
+      btnAll.onclick = () => {
+        appData.activeTab = 'all';
+        saveData();
+        render();
+      };
+      tabsContainer.appendChild(btnAll);
+
+      // TAB-TAB HALAMAN
       appData.tabs.forEach((tab, index) => {
         const btn = document.createElement('button');
         btn.className = `tab-btn ${index === appData.activeTab ? 'active' : ''}`;
@@ -642,6 +656,7 @@
         tabsContainer.appendChild(btn);
       });
 
+      // TOMBOL TAMBAH HALAMAN UNTUK ADMIN
       const addTabBtn = document.createElement('button');
       addTabBtn.className = 'tab-btn dashed';
       addTabBtn.innerText = '+ TAMBAH HALAMAN';
@@ -654,11 +669,34 @@
       const grid = document.getElementById('gridCards');
       grid.innerHTML = '';
 
-      if (!appData.tabs[appData.activeTab]) return;
+      let currentTables = [];
 
-      const currentTables = appData.tabs[appData.activeTab].tables || [];
+      // JIKA TAB 'ALL' DIAKTIFKAN, GABUNGKAN SELURUH TABEL DARI SEMUA HALAMAN
+      if (appData.activeTab === 'all') {
+        appData.tabs.forEach((tab, tabIdx) => {
+          if (tab.tables) {
+            tab.tables.forEach((tbl, tblIdx) => {
+              currentTables.push({
+                ...tbl,
+                parentTabIdx: tabIdx,
+                realTableIdx: tblIdx,
+                tabName: tab.name
+              });
+            });
+          }
+        });
+      } else {
+        if (!appData.tabs[appData.activeTab]) return;
+        const tables = appData.tabs[appData.activeTab].tables || [];
+        currentTables = tables.map((tbl, tblIdx) => ({
+          ...tbl,
+          parentTabIdx: appData.activeTab,
+          realTableIdx: tblIdx,
+          tabName: appData.tabs[appData.activeTab].name
+        }));
+      }
 
-      currentTables.forEach((table, tableIdx) => {
+      currentTables.forEach((table) => {
         const card = document.createElement('div');
         card.className = 'card-table';
         card.setAttribute('data-title', table.title.toLowerCase());
@@ -672,7 +710,7 @@
             <td class="col-label">
               <div class="label-wrapper">
                 <span class="label-text">${escapeHtml(labelText)}</span>
-                <button class="btn-edit-label" onclick="editRowLabel(${tableIdx}, ${rowIdx})" title="Edit Keterangan">✏️</button>
+                <button class="btn-edit-label" onclick="editRowLabel(${table.parentTabIdx}, ${table.realTableIdx}, ${rowIdx})" title="Edit Keterangan">✏️</button>
               </div>
             </td>
             <td class="col-num">
@@ -687,8 +725,8 @@
               <div class="cell-text-wrapper">
                 <div class="cell-text">${escapeHtml(rowContent)}</div>
                 <div class="row-actions">
-                  <button class="btn-row-opt" onclick="editRowText(${tableIdx}, ${rowIdx})" title="Edit Teks Baris">✏️</button>
-                  <button class="btn-row-opt" onclick="deleteRow(${tableIdx}, ${rowIdx})" title="Hapus Baris">🗑️</button>
+                  <button class="btn-row-opt" onclick="editRowText(${table.parentTabIdx}, ${table.realTableIdx}, ${rowIdx})" title="Edit Teks Baris">✏️</button>
+                  <button class="btn-row-opt" onclick="deleteRow(${table.parentTabIdx}, ${table.realTableIdx}, ${rowIdx})" title="Hapus Baris">🗑️</button>
                 </div>
               </div>
             </td>
@@ -696,12 +734,16 @@
         `;
         }).join('');
 
+        const displayTitle = appData.activeTab === 'all' 
+          ? `${escapeHtml(table.title)} <span style="font-size:10px; opacity:0.8; font-weight:normal;">[${escapeHtml(table.tabName)}]</span>`
+          : escapeHtml(table.title);
+
         card.innerHTML = `
           <div class="card-header">
-            <span class="card-title">${escapeHtml(table.title)}</span>
+            <span class="card-title">${displayTitle}</span>
             <div class="card-actions">
-              <button class="btn-icon btn-edit-title" onclick="editTableTitle(${tableIdx})" title="Edit Judul Tabel">✏️</button>
-              <button class="btn-icon btn-delete-card" onclick="deleteTable(${tableIdx})" title="Hapus Tabel">🗑️</button>
+              <button class="btn-icon btn-edit-title" onclick="editTableTitle(${table.parentTabIdx}, ${table.realTableIdx})" title="Edit Judul Tabel">✏️</button>
+              <button class="btn-icon btn-delete-card" onclick="deleteTable(${table.parentTabIdx}, ${table.realTableIdx})" title="Hapus Tabel">🗑️</button>
             </div>
           </div>
           <table class="table-content">
@@ -709,14 +751,13 @@
           </table>
           <div class="card-footer">
             <span>TAMBAH BARIS/KOLOM</span>
-            <span class="btn-tambah-kolom" onclick="addRow(${tableIdx})">+ Tambah</span>
+            <span class="btn-tambah-kolom" onclick="addRow(${table.parentTabIdx}, ${table.realTableIdx})">+ Tambah</span>
           </div>
         `;
 
         grid.appendChild(card);
       });
 
-      // Panggil filter jika input pencarian sedang terisi
       filterTables();
     }
 
@@ -735,9 +776,12 @@
 
     function addTable() {
       if (!isAdminLoggedIn) return;
+      let targetTabIdx = appData.activeTab;
+      if (targetTabIdx === 'all') targetTabIdx = 0; // default ke tab pertama jika di mode ALL
+
       const title = prompt("Masukkan Judul Tabel Baru:");
       if (title) {
-        appData.tabs[appData.activeTab].tables.push({ 
+        appData.tabs[targetTabIdx].tables.push({ 
           title: title, 
           rows: [{ label: "KETERANGAN", text: "Isi Baris Baru" }] 
         });
@@ -746,33 +790,33 @@
       }
     }
 
-    function editTableTitle(tableIdx) {
+    function editTableTitle(tabIdx, tableIdx) {
       if (!isAdminLoggedIn) return;
-      const currentTitle = appData.tabs[appData.activeTab].tables[tableIdx].title;
+      const currentTitle = appData.tabs[tabIdx].tables[tableIdx].title;
       const newTitle = prompt("Edit Judul Tabel:", currentTitle);
       if (newTitle) {
-        appData.tabs[appData.activeTab].tables[tableIdx].title = newTitle;
+        appData.tabs[tabIdx].tables[tableIdx].title = newTitle;
         saveData();
         render();
       }
     }
 
-    function deleteTable(tableIdx) {
+    function deleteTable(tabIdx, tableIdx) {
       if (!isAdminLoggedIn) return;
       if (confirm("Apakah Anda yakin ingin menghapus tabel ini?")) {
-        appData.tabs[appData.activeTab].tables.splice(tableIdx, 1);
+        appData.tabs[tabIdx].tables.splice(tableIdx, 1);
         saveData();
         render();
       }
     }
 
-    function addRow(tableIdx) {
+    function addRow(tabIdx, tableIdx) {
       if (!isAdminLoggedIn) return;
       const label = prompt("Masukkan Teks Keterangan (Kolom Kiri):", "KETERANGAN");
       if (label === null) return;
       const text = prompt("Masukkan Isi Teks Utama:");
       if (text !== null) {
-        appData.tabs[appData.activeTab].tables[tableIdx].rows.push({
+        appData.tabs[tabIdx].tables[tableIdx].rows.push({
           label: label.trim(),
           text: text
         });
@@ -781,16 +825,16 @@
       }
     }
 
-    function editRowLabel(tableIdx, rowIdx) {
+    function editRowLabel(tabIdx, tableIdx, rowIdx) {
       if (!isAdminLoggedIn) return;
-      const row = appData.tabs[appData.activeTab].tables[tableIdx].rows[rowIdx];
+      const row = appData.tabs[tabIdx].tables[tableIdx].rows[rowIdx];
       const currentLabel = typeof row === 'object' ? (row.label || '') : '';
       const newLabel = prompt("Edit Keterangan (Kolom Kiri):", currentLabel);
       if (newLabel !== null) {
         if (typeof row === 'object') {
           row.label = newLabel;
         } else {
-          appData.tabs[appData.activeTab].tables[tableIdx].rows[rowIdx] = {
+          appData.tabs[tabIdx].tables[tableIdx].rows[rowIdx] = {
             label: newLabel,
             text: row
           };
@@ -800,16 +844,16 @@
       }
     }
 
-    function editRowText(tableIdx, rowIdx) {
+    function editRowText(tabIdx, tableIdx, rowIdx) {
       if (!isAdminLoggedIn) return;
-      const row = appData.tabs[appData.activeTab].tables[tableIdx].rows[rowIdx];
+      const row = appData.tabs[tabIdx].tables[tableIdx].rows[rowIdx];
       const currentText = typeof row === 'object' ? (row.text || '') : row;
       const newText = prompt("Edit Isi Teks Utama:", currentText);
       if (newText !== null) {
         if (typeof row === 'object') {
           row.text = newText;
         } else {
-          appData.tabs[appData.activeTab].tables[tableIdx].rows[rowIdx] = {
+          appData.tabs[tabIdx].tables[tableIdx].rows[rowIdx] = {
             label: '',
             text: newText
           };
@@ -819,20 +863,27 @@
       }
     }
 
-    function deleteRow(tableIdx, rowIdx) {
+    function deleteRow(tabIdx, tableIdx, rowIdx) {
       if (!isAdminLoggedIn) return;
       if (confirm("Hapus baris ini?")) {
-        appData.tabs[appData.activeTab].tables[tableIdx].rows.splice(rowIdx, 1);
+        appData.tabs[tabIdx].tables[tableIdx].rows.splice(rowIdx, 1);
         saveData();
         render();
       }
     }
 
-    /* FUNGSI PENCARIAN DENGAN AUTO FULL-WIDTH EXPAND */
+    /* FUNGSI PENCARIAN OTOMATIS + AUTO-EXPAND FULL WIDTH */
     function filterTables() {
       const query = document.getElementById('searchInput').value.trim().toLowerCase();
       const grid = document.getElementById('gridCards');
-      const cards = document.querySelectorAll('.card-table');
+
+      // Pindah ke mode ALL otomatis saat mengetik pencarian agar semua data ketemu
+      if (query !== "" && appData.activeTab !== 'all') {
+        appData.activeTab = 'all';
+        renderTabs();
+        renderTables();
+        return;
+      }
 
       if (query !== "") {
         grid.classList.add('is-searching');
@@ -840,6 +891,7 @@
         grid.classList.remove('is-searching');
       }
 
+      const cards = document.querySelectorAll('.card-table');
       cards.forEach(card => {
         const title = card.getAttribute('data-title');
         const textContent = card.innerText.toLowerCase();
